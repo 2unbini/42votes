@@ -11,9 +11,9 @@ CREATE TABLE USER
     `username`    VARCHAR(200)    NOT NULL    COMMENT '유저 이름',
     `password`    VARCHAR(200)    NOT NULL    COMMENT '암호화된 유저 비밀번호',
     `email`       VARCHAR(200)    NOT NULL    COMMENT '유저 이메일',
-    `created_at`  DATETIME        NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
-    `updated_at`  DATETIME        NOT NULL    DEFAULT NOW() COMMENT '업데이트된 시간',
-    `deleted_at`  DATETIME        NULL        DEFAULT NULL COMMENT '삭제된 시간',
+    `created_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
+    `updated_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '업데이트된 시간',
+    `deleted_at`  TIMESTAMP       NULL        DEFAULT NULL COMMENT '삭제된 시간',
     PRIMARY KEY (id)
 );
 
@@ -25,9 +25,9 @@ CREATE TABLE QUESTION
     `id`          BIGINT          NOT NULL    AUTO_INCREMENT COMMENT 'question id',
     `user_id`     BIGINT          NOT NULL    COMMENT '질문을 만든 유저 id',
     `question`    VARCHAR(255)    NOT NULL    COMMENT '질문 내용',
-    `expires_at`  DATETIME        NOT NULL    COMMENT '투표 기한',
-    `created_at`  DATETIME        NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
-    `deleted_at`  DATETIME        NULL        DEFAULT NULL COMMENT '삭제된 시간',
+    `expires_at`  TIMESTAMP       NOT NULL    COMMENT '투표 기한',
+    `created_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
+    `deleted_at`  TIMESTAMP       NULL        DEFAULT NULL COMMENT '삭제된 시간',
     `is_expired`  TINYINT         NULL        COMMENT '투표 마감 여부',
     PRIMARY KEY (id)
 );
