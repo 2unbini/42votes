@@ -5,10 +5,11 @@ DROP TABLE IF EXISTS QUESTION;
 DROP TABLE IF EXISTS USER;
 
 -- USER Table Create SQL
-CREATE TABLE USER
+
+CREATE TABLE IF NOT EXISTS USER
 (
     `id`          BIGINT          NOT NULL    AUTO_INCREMENT COMMENT '유저 id',
-    `username`    VARCHAR(200)    NOT NULL    COMMENT '유저 이름',
+    `username`    VARCHAR(200)    NOT NULL    UNIQUE   COMMENT '유저 이름',
     `password`    VARCHAR(200)    NOT NULL    COMMENT '암호화된 유저 비밀번호',
     `email`       VARCHAR(200)    NOT NULL    COMMENT '유저 이메일',
     `created_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
@@ -20,15 +21,16 @@ CREATE TABLE USER
 ALTER TABLE USER COMMENT 'oauth2를 이용해서 가입한 유저의 정보를 저장합니다.';
 
 -- QUESTION Table Create SQL
-CREATE TABLE QUESTION
+CREATE TABLE IF NOT EXISTS QUESTION
 (
     `id`          BIGINT          NOT NULL    AUTO_INCREMENT COMMENT 'question id',
     `user_id`     BIGINT          NOT NULL    COMMENT '질문을 만든 유저 id',
     `question`    VARCHAR(255)    NOT NULL    COMMENT '질문 내용',
+    `is_expired`  TINYINT         NULL        DEFAULT 0 COMMENT '투표 마감 여부',
     `expires_at`  TIMESTAMP       NOT NULL    COMMENT '투표 기한',
-    `created_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
+    `created_at`  TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP COMMENT '생성된 시간',
+    `updated_at`  TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP COMMENT '업데이트된 시간',
     `deleted_at`  TIMESTAMP       NULL        DEFAULT NULL COMMENT '삭제된 시간',
-    `is_expired`  TINYINT         NULL        COMMENT '투표 마감 여부',
     PRIMARY KEY (id)
 );
 
@@ -39,7 +41,7 @@ ALTER TABLE QUESTION
         REFERENCES USER (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- ANSWER Table Create SQL
-CREATE TABLE ANSWER
+CREATE TABLE IF NOT EXISTS ANSWER
 (
     `id`           BIGINT         NOT NULL    AUTO_INCREMENT COMMENT 'answer id',
     `question_id`  BIGINT         NOT NULL    COMMENT '답변과 연관된 질문의 id',
@@ -55,7 +57,7 @@ ALTER TABLE ANSWER
         REFERENCES QUESTION (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- ANSWER_HISTORY Table Create SQL
-CREATE TABLE ANSWER_HISTORY
+CREATE TABLE IF NOT EXISTS ANSWER_HISTORY
 (
     `id`         BIGINT    NOT NULL    AUTO_INCREMENT COMMENT 'answer history id',
     `user_id`    BIGINT    NOT NULL    COMMENT 'user id',
