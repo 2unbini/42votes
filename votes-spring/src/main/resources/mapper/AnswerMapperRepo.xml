@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.votesspring.mapper.AnswerMapper">
+    <resultMap id="rAnswer" type="com.example.votesspring.domain.Answer">
+        <result property="id" column="id"/>
+        <result property="questionId" column="question_id"/>
+        <result property="answer" column="answer"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <insert id="save" parameterType="Answer">
+        insert into ANSWER (question_id, answer)
+        values (#{questionId}, #{answer})
+    </insert>
+
+    <select id="findAllByQuestionId"  resultMap="rAnswer">
+        select * from ANSWER where question_id = #{questionId}
+    </select>
+
+    <select id="findById"  resultMap="rAnswer">
+        select * from ANSWER where id = #{id}
+    </select>
+
+    <update id="updateCountById" parameterType="Answer">
+        update ANSWER SET count = #{count} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from ANSWER where id = #{id}
+    </delete>
+
+    <delete id="deleteByQuestinoId">
+        delete from ANSWER where question_id = #{questionId}
+    </delete>
+</mapper>
