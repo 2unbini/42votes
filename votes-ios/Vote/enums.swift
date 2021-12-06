@@ -27,3 +27,9 @@ enum Tag: Int {
     case dateLabel = 204
     case dueDatePicker = 205
 }
+
+enum VoteViewStatus {
+    case beforeVote
+    case afterVote
+    case checkResult
+}

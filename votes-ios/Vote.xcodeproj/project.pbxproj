@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8ED2759F32A00680099 /* VoteViewController.swift */; };
+		A867C8F02759F63A00680099 /* AnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8EF2759F63A00680099 /* AnswerModel.swift */; };
 		A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C3E272755E298009AEDBE /* HomeViewController.swift */; };
 		A86C3E2A2755E3CF009AEDBE /* NewVoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C3E292755E3CF009AEDBE /* NewVoteViewController.swift */; };
 		A86C3E2C2755E57D009AEDBE /* QuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C3E2B2755E57C009AEDBE /* QuestionModel.swift */; };
-		A896EFA1275639CB00B2A227 /* NewVoteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A896EFA0275639CB00B2A227 /* NewVoteModel.swift */; };
-		A896EFA327563AFA00B2A227 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A896EFA227563AFA00B2A227 /* Tag.swift */; };
+		A896EFA1275639CB00B2A227 /* VoteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A896EFA0275639CB00B2A227 /* VoteModel.swift */; };
+		A896EFA327563AFA00B2A227 /* enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A896EFA227563AFA00B2A227 /* enums.swift */; };
 		A8DFAAED274FE59000E4A7F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DFAAEC274FE59000E4A7F2 /* AppDelegate.swift */; };
 		A8DFAAEF274FE59000E4A7F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DFAAEE274FE59000E4A7F2 /* SceneDelegate.swift */; };
 		A8DFAAF1274FE59000E4A7F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DFAAF0274FE59000E4A7F2 /* ViewController.swift */; };
@@ -21,11 +23,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A867C8ED2759F32A00680099 /* VoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewController.swift; sourceTree = "<group>"; };
+		A867C8EF2759F63A00680099 /* AnswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerModel.swift; sourceTree = "<group>"; };
 		A86C3E272755E298009AEDBE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		A86C3E292755E3CF009AEDBE /* NewVoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVoteViewController.swift; sourceTree = "<group>"; };
 		A86C3E2B2755E57C009AEDBE /* QuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionModel.swift; sourceTree = "<group>"; };
-		A896EFA0275639CB00B2A227 /* NewVoteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVoteModel.swift; sourceTree = "<group>"; };
-		A896EFA227563AFA00B2A227 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		A896EFA0275639CB00B2A227 /* VoteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteModel.swift; sourceTree = "<group>"; };
+		A896EFA227563AFA00B2A227 /* enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = enums.swift; sourceTree = "<group>"; };
 		A8DFAAE9274FE59000E4A7F2 /* Vote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DFAAEC274FE59000E4A7F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A8DFAAEE274FE59000E4A7F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +56,7 @@
 			children = (
 				A86C3E272755E298009AEDBE /* HomeViewController.swift */,
 				A86C3E292755E3CF009AEDBE /* NewVoteViewController.swift */,
+				A867C8ED2759F32A00680099 /* VoteViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -60,7 +65,8 @@
 			isa = PBXGroup;
 			children = (
 				A86C3E2B2755E57C009AEDBE /* QuestionModel.swift */,
-				A896EFA0275639CB00B2A227 /* NewVoteModel.swift */,
+				A896EFA0275639CB00B2A227 /* VoteModel.swift */,
+				A867C8EF2759F63A00680099 /* AnswerModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -99,7 +105,7 @@
 				A8DFAAEC274FE59000E4A7F2 /* AppDelegate.swift */,
 				A8DFAAEE274FE59000E4A7F2 /* SceneDelegate.swift */,
 				A8DFAAF0274FE59000E4A7F2 /* ViewController.swift */,
-				A896EFA227563AFA00B2A227 /* Tag.swift */,
+				A896EFA227563AFA00B2A227 /* enums.swift */,
 				A8DFAAF5274FE59200E4A7F2 /* Assets.xcassets */,
 				A8DFAAFA274FE59200E4A7F2 /* Info.plist */,
 			);
@@ -178,11 +184,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A86C3E2C2755E57D009AEDBE /* QuestionModel.swift in Sources */,
-				A896EFA1275639CB00B2A227 /* NewVoteModel.swift in Sources */,
+				A896EFA1275639CB00B2A227 /* VoteModel.swift in Sources */,
 				A8DFAAF1274FE59000E4A7F2 /* ViewController.swift in Sources */,
 				A8DFAAED274FE59000E4A7F2 /* AppDelegate.swift in Sources */,
 				A8DFAAEF274FE59000E4A7F2 /* SceneDelegate.swift in Sources */,
-				A896EFA327563AFA00B2A227 /* Tag.swift in Sources */,
+				A867C8F02759F63A00680099 /* AnswerModel.swift in Sources */,
+				A896EFA327563AFA00B2A227 /* enums.swift in Sources */,
+				A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */,
 				A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */,
 				A86C3E2A2755E3CF009AEDBE /* NewVoteViewController.swift in Sources */,
 			);

@@ -109,7 +109,29 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wRW-Ux-tGA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2940.579710144928" y="91.741071428571431"/>
+            <point key="canvasLocation" x="3117" y="-35"/>
+        </scene>
+        <!--Vote View Controller-->
+        <scene sceneID="DCa-Du-vjf">
+            <objects>
+                <viewController storyboardIdentifier="VoteVC" hidesBottomBarWhenPushed="YES" id="hSh-R6-MNk" customClass="VoteViewController" customModule="Vote" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="i0t-ce-ztv">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="OO6-BB-gqm"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="gua-Qg-VZL">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="square.and.arrow.up" catalog="system" id="AEr-qC-tvH">
+                            <connections>
+                                <action selector="shareVote:" destination="hSh-R6-MNk" id="UPC-JQ-A4j"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T9A-bd-o61" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3130.434782608696" y="678.34821428571422"/>
         </scene>
         <!--Home-->
         <scene sceneID="8Bh-TT-rmh">
@@ -152,6 +174,7 @@
     <resources>
         <image name="person.3.fill" catalog="system" width="128" height="61"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
