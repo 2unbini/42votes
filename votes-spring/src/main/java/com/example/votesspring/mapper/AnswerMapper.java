@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface AnswerMapper {
     void save(Answer answer);
 
-    List<Answer> findAllByQuestionId(Question question);
+    List<Answer> findAllByQuestionId(Long questionId);
+
+    Optional<Answer> findById(Long id);
 
     void updateCountById(Answer answer);
 

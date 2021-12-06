@@ -1,5 +1,6 @@
 package com.example.votesspring.domain;
 
+import com.example.votesspring.dto.response.AnswerResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,13 @@ public class Answer {
         this.questionId = questionId;
         this.answer = answer;
         this.count = count;
+    }
+
+    public AnswerResponseDto answerResponseDtoConverter() {
+        return AnswerResponseDto.builder()
+                .id(this.id)
+                .answer(this.answer)
+                .count(this.count)
+                .build();
     }
 }

@@ -1,17 +1,6 @@
 package com.example.votesspring.domain;
 
-//CREATE TABLE QUESTION
-//        (
-//        `id`          BIGINT          NOT NULL    AUTO_INCREMENT COMMENT 'question id',
-//        `user_id`     BIGINT          NOT NULL    COMMENT '질문을 만든 유저 id',
-//        `question`    VARCHAR(255)    NOT NULL    COMMENT '질문 내용',
-//        `expires_at`  TIMESTAMP       NOT NULL    COMMENT '투표 기한',
-//        `created_at`  TIMESTAMP       NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
-//        `deleted_at`  TIMESTAMP       NULL        DEFAULT NULL COMMENT '삭제된 시간',
-//        `is_expired`  TINYINT         NULL        COMMENT '투표 마감 여부',
-//        PRIMARY KEY (id)
-//        );
-
+import com.example.votesspring.dto.response.QuestionResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,5 +34,13 @@ public class Question{
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+    }
+
+    public QuestionResponseDto questionResponseDtoConverter() {
+        return QuestionResponseDto.builder()
+                .id(this.id)
+                .question(this.question)
+                .isExpired(isExpired)
+                .build();
     }
 }

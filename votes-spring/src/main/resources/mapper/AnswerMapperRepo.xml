@@ -14,8 +14,12 @@
         values (#{questionId}, #{answer})
     </insert>
 
-    <select id="findAllByQuestionId" parameterType="Question" resultMap="rAnswer">
-        select * from ANSWER where question_id = #{id}
+    <select id="findAllByQuestionId"  resultMap="rAnswer">
+        select * from ANSWER where question_id = #{questionId}
+    </select>
+
+    <select id="findById"  resultMap="rAnswer">
+        select * from ANSWER where id = #{id}
     </select>
 
     <update id="updateCountById" parameterType="Answer">

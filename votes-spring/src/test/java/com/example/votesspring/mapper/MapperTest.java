@@ -41,11 +41,13 @@ class MapperTest {
         );
         Optional<User> user = userMapper.findByName("userTester");
         Assertions.assertTrue(user.isPresent());
-        questionMapper.save(Question.builder()
+        Question build = Question.builder()
                 .userId(user.get().getId())
                 .question("시험용 데이터입니다.")
                 .expiresAt(LocalDateTime.now().plusDays(1))
-                .build());
+                .build();
+
+        Long save = questionMapper.save(build);
         List<Question> questionList = questionMapper.findByUserId(user.get().getId());
         Assertions.assertNotEquals(0, questionList.size());
         Optional<Question> question = questionMapper.findById(questionList.get(0).getId());
@@ -60,11 +62,11 @@ class MapperTest {
                 .answer("시험용 아니요.")
                 .questionId(question.get().getId())
                 .build());
-        List<Answer> answerList = answerMapper.findAllByQuestionId(question.get());
+        List<Answer> answerList = answerMapper.findAllByQuestionId(question.get().getId());
         Assertions.assertNotEquals(0, answerList.size());
         answerList.get(0).setCount(answerList.get(0).getCount() + 1L);
         answerMapper.updateCountById(answerList.get(0));
-        answerList = answerMapper.findAllByQuestionId(question.get());
+        answerList = answerMapper.findAllByQuestionId(question.get().getId());
         Assertions.assertNotEquals(0, answerList.get(0).getCount());
 
         // Answer History save and exist test
@@ -83,6 +85,6 @@ class MapperTest {
         userMapper.deleteByName(user.get().getUsername());
         Assertions.assertFalse(userMapper.findByName("userTester").isPresent());
         Assertions.assertFalse(questionMapper.findById(question.get().getId()).isPresent());
-        Assertions.assertTrue(answerMapper.findAllByQuestionId(question.get()).isEmpty());
+        Assertions.assertTrue(answerMapper.findAllByQuestionId(question.get().getId()).isEmpty());
     }
 }

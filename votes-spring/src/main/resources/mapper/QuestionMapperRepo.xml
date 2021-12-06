@@ -16,6 +16,9 @@
     <insert id="save" parameterType="Question">
         insert into QUESTION (user_id, question, expires_at)
         values (#{userId}, #{question}, #{expiresAt})
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
     <select id="findAll" resultMap="rQuestion">

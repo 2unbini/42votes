@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Mapper
 public interface QuestionMapper {
-    void save(Question question);
+    Long save(Question question);
 
     List<Question> findAll();
 
