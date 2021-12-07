@@ -25,6 +25,26 @@ class HomeViewController: UITableViewController {
         return ret
     }()
     
+    lazy var voteData: Vote = {
+        var ret = Vote()
+        
+        ret.question = QuestionVO()
+        ret.answers = [AnswerVO]()
+        
+        ret.question?.question = "가장 좋아하는 42 과제는?"
+        ret.question?.isExpired = false
+        
+        for (answer, count, id) in answerDataSet {
+            let data = AnswerVO()
+            data.answer = answer
+            data.count = count
+            data.id = id
+            
+            ret.answers?.append(data)
+        }
+        return ret
+    }()
+    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.list.count
@@ -33,6 +53,15 @@ class HomeViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         NSLog("\(indexPath.row) selected...")
+        
+        guard let voteVC = self.storyboard?.instantiateViewController(withIdentifier: "VoteVC") as? VoteViewController else {
+            return
+        }
+        
+        voteVC.voteData = voteData
+        self.navigationController?.pushViewController(voteVC, animated: true)
+        
+        // question id를 이용해 데이터 세팅한 뒤 Vote뷰로 이동
     }
 
     
