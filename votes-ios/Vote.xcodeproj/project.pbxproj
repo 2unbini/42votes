@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A815F8EC2765D35B00A24D18 /* MyVoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */; };
 		A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8ED2759F32A00680099 /* VoteViewController.swift */; };
 		A867C8F02759F63A00680099 /* AnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8EF2759F63A00680099 /* AnswerModel.swift */; };
 		A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C3E272755E298009AEDBE /* HomeViewController.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVoteViewController.swift; sourceTree = "<group>"; };
 		A867C8ED2759F32A00680099 /* VoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewController.swift; sourceTree = "<group>"; };
 		A867C8EF2759F63A00680099 /* AnswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerModel.swift; sourceTree = "<group>"; };
 		A86C3E272755E298009AEDBE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 				A86C3E272755E298009AEDBE /* HomeViewController.swift */,
 				A86C3E292755E3CF009AEDBE /* NewVoteViewController.swift */,
 				A867C8ED2759F32A00680099 /* VoteViewController.swift */,
+				A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				A8DFAAED274FE59000E4A7F2 /* AppDelegate.swift in Sources */,
 				A8DFAAEF274FE59000E4A7F2 /* SceneDelegate.swift in Sources */,
 				A867C8F02759F63A00680099 /* AnswerModel.swift in Sources */,
+				A815F8EC2765D35B00A24D18 /* MyVoteViewController.swift in Sources */,
 				A896EFA327563AFA00B2A227 /* enums.swift in Sources */,
 				A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */,
 				A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */,
