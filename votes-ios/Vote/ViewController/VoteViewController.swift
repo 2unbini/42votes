@@ -87,7 +87,6 @@ class VoteViewController: UIViewController {
         scrollView.contentSize.height = contentHeight
     }
     
-    
     // MARK: - Not Complete
     // 공유 기능 추가해야 함.
     
@@ -179,7 +178,6 @@ class VoteViewController: UIViewController {
         if let answerList = voteData.answers {
             for elem in answerList {
                 
-                // id 대신 lastTag 으로 각 뷰의 태그 수정 필요!!
                 guard let text = elem.answer else { return }
                 guard let count = elem.count else { return }
                 
@@ -188,7 +186,6 @@ class VoteViewController: UIViewController {
                     let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapFunction(sender:)))
 
                     answerView.tag = lastTag
-                    
                     answerView.isUserInteractionEnabled = true
                     answerView.addGestureRecognizer(tap)
                     answerView.translatesAutoresizingMaskIntoConstraints = false
@@ -371,7 +368,7 @@ class VoteViewController: UIViewController {
         resultButton = UIButton(type: .system, primaryAction: returnAction)
         
         setButtonAttribute()
-        
+      
         scrollView.addSubview(voteButton)
         scrollView.addSubview(resultButton)
         
