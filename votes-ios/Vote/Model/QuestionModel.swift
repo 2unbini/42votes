@@ -23,6 +23,11 @@ var dataSet = [
     (12, "", false)
 ]
 
+var myDataSet = [
+    (3, "가장 힘들었던 42 과제는?", true),
+    (4, "가장 좋아하는 42 과제는?", false)
+]
+
 class QuestionVO {
     var id: Int?
     var question: String?
