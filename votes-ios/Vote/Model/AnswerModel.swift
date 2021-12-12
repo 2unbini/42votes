@@ -22,7 +22,7 @@ let answerDataSet = [("libft", 20, 1),
                      ("fdf", 5, 7),
                      ("fractol", 10, 8),
                      ("minitalk", 10, 9),
-//                     ("push swap", 5, 10),
-//                     ("philosopher", 5, 11),
-//                     ("minishell", 5, 12)
+                     ("push swap", 5, 10),
+                     ("philosopher", 5, 11),
+                     ("minishell", 5, 12)
 ]

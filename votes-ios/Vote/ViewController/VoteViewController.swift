@@ -56,10 +56,12 @@ class VoteViewController: UIViewController {
     var voteData: Vote!
     var allVotesCount = 0
     
-    var lastTag = 0
+    var lastTag = 1
+    var loadTag = 1
     var contentHeight: CGFloat = 0
     
     // 버튼 누를 때마다 상태 변화 저장
+    var selectedAnswerTag = -1
     var isAnswerViewLoadedBefore = false
     var voteViewStatus = VoteViewStatus.beforeVote
     
@@ -83,10 +85,6 @@ class VoteViewController: UIViewController {
         // 각 UI 요소 만들어질 때마다 contentSize 증가함
         
         scrollView.contentSize.height = contentHeight
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        configureAnswerField()
     }
     
     
@@ -181,34 +179,15 @@ class VoteViewController: UIViewController {
         if let answerList = voteData.answers {
             for elem in answerList {
                 
-                guard let id = elem.id else { return }
+                // id 대신 lastTag 으로 각 뷰의 태그 수정 필요!!
                 guard let text = elem.answer else { return }
                 guard let count = elem.count else { return }
                 
-                if isAnswerViewLoadedBefore {
-                    if let answerView = contentView.viewWithTag(id) {
-                        if let backLabel = answerView.viewWithTag(id + 100) {
-                            
-                            if voteViewStatus == .beforeVote {
-                                backLabel.backgroundColor = UIColor.clear
-                            } else if voteViewStatus == .afterVote || voteViewStatus == .checkResult {
-                                backLabel.backgroundColor = UIColor.systemBrown
-                            }
-                        }
-                    }
-                    continue
-                }
-                
-                // MARK: - Not Complete
-                // 각 선택지 탭 했을 때, 해당 선택지 하이라이트되는 기능 추가해야 함.
-                // 현 상태 : tap 먹히려면 answerView가 ContentView가 아닌 ScrollView의 subView가 되어야 함.
-                // 바꿀 방법 1 : answerView를 ScrollView에 추가함
-                // 바꿀 방법 2 : contentView를 투명화시킴
                 let answerView: UIView = {
                     let answerView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
-                    let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapFunction))
-                    
-                    answerView.tag = id
+                    let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapFunction(sender:)))
+
+                    answerView.tag = lastTag
                     
                     answerView.isUserInteractionEnabled = true
                     answerView.addGestureRecognizer(tap)
@@ -217,36 +196,45 @@ class VoteViewController: UIViewController {
                 }()
                 
                 let textLabel: UILabel = {
-                    let textLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 30))
+                    let textLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
                     
-                    textLabel.tag = id
+                    textLabel.tag = lastTag
                     textLabel.text = "  " + text
                     
                     textLabel.translatesAutoresizingMaskIntoConstraints = false
                     return textLabel
                 }()
                 
-                let backLabel: UILabel = {
-                   let backLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 30))
+                let resultBar: UILabel = {
+                    let resultBar = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
   
-                    backLabel.tag = id + 100
-                    
-                    backLabel.translatesAutoresizingMaskIntoConstraints = false
-                    return backLabel
+                    resultBar.tag = lastTag + 100
+
+                    resultBar.translatesAutoresizingMaskIntoConstraints = false
+                    return resultBar
                 }()
                 
-                let baseWidth = (view.frame.width * 0.7) / CGFloat(allVotesCount)
-                let widthCount = CGFloat((100 * count) / allVotesCount)
+                let selectedBack: UILabel = {
+                    let selectedBack = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
+                    
+                    selectedBack.tag = lastTag + 200
+                    
+                    selectedBack.translatesAutoresizingMaskIntoConstraints = false
+                    return selectedBack
+                }()
+                
+                let percent = CGFloat((Float(count) / Float(allVotesCount)))
                 
                 setAnswerTextLabelAttribute(textLabel)
-                setAnswerBackLabelAttribute(backLabel)
+                setAnswerResultBarAttribute(resultBar)
                 
-                answerView.addSubview(backLabel)
+                answerView.addSubview(selectedBack)
+                answerView.addSubview(resultBar)
                 answerView.addSubview(textLabel)
-                contentView.addSubview(answerView)
+                scrollView.addSubview(answerView)
                 
                 setAnswerViewConstraints(answerView)
-                setAnswerConstraints(textLabel, backLabel, baseWidth * widthCount)
+                setAnswerConstraints(answerView, [textLabel, resultBar, selectedBack], percent)
                 lastTag += 1
             }
             
@@ -254,8 +242,47 @@ class VoteViewController: UIViewController {
         }
     }
     
+    // 탭 한 경우, 해당 부분의 색상 다르게 보이는 기능 추가
     @objc func tapFunction(sender: UITapGestureRecognizer) {
-        print("tapped")
+        
+        if voteViewStatus != .beforeVote {
+            print("Tap Answer Locked")
+            return
+        }
+        guard let parentView = sender.view else { fatalError("No parent View") }
+        guard let childBackgroundView = parentView.viewWithTag(parentView.tag + 200) else { fatalError("No child Background View") }
+        
+        if selectedAnswerTag != -1 && childBackgroundView.tag != selectedAnswerTag {
+            guard let preSelectedAnswerView = scrollView.viewWithTag(selectedAnswerTag) else { fatalError("No previous selected Answer View") }
+            preSelectedAnswerView.backgroundColor = .clear
+        }
+        
+        childBackgroundView.backgroundColor = .systemBlue.withAlphaComponent(0.5)
+        selectedAnswerTag = childBackgroundView.tag
+        viewWillAppear(true)
+
+    }
+    
+    // 이미 투표한 경우, 바로 결과 보여주도록 backLabel attribute 설정
+    private func configureAnswerFieldAfterVote() {
+        if isAnswerViewLoadedBefore && lastTag != 1 {
+            for _ in 1...(lastTag - 1) {
+                if let answerView = scrollView.viewWithTag(loadTag) {
+                    if let backLabel = answerView.viewWithTag(loadTag + 100) {
+                        
+                        if voteViewStatus == .beforeVote {
+                            backLabel.backgroundColor = UIColor.clear
+                        } else if voteViewStatus == .afterVote || voteViewStatus == .checkResult {
+                            backLabel.backgroundColor = UIColor.systemGray2
+                        }
+                    }
+                }
+                loadTag += 1
+                continue
+            }
+            loadTag = 1
+            return
+        }
     }
     
     private func setAnswerTextLabelAttribute(_ textLabel: UILabel) {
@@ -269,7 +296,7 @@ class VoteViewController: UIViewController {
         }
     }
     
-    private func setAnswerBackLabelAttribute(_ backLabel: UILabel) {
+    private func setAnswerResultBarAttribute(_ backLabel: UILabel) {
         backLabel.numberOfLines = 0
         
         if voteData.question?.isExpired == true {
@@ -292,33 +319,31 @@ class VoteViewController: UIViewController {
             answerView.topAnchor.constraint(equalTo: questionStateLabel.bottomAnchor, constant: 25).isActive = true
             self.contentHeight += (answerView.frame.height + 25)
         } else {
-            guard let preAnswerView = contentView.viewWithTag(answerView.tag - 1) else { return }
+            guard let preAnswerView = scrollView.viewWithTag(answerView.tag - 1) else { return }
             answerView.topAnchor.constraint(equalTo: preAnswerView.bottomAnchor, constant: 10).isActive = true
             self.contentHeight += (answerView.frame.height + 10)
         }
     }
     
-    private func setAnswerConstraints(_ answer: UILabel, _ background: UILabel, _ backWidth: CGFloat) {
-        answer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+    private func setAnswerConstraints(_ parentView: UIView, _ childViews: [UILabel], _ percent: CGFloat) {
+        let answer = childViews[0]
+        let background = childViews[1]
+        let selected = childViews[2]
+        
+        answer.centerXAnchor.constraint(equalTo: parentView.centerXAnchor).isActive = true
+        answer.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
         answer.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.7).isActive = true
-        answer.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        answer.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
         background.leadingAnchor.constraint(equalTo: answer.leadingAnchor).isActive = true
-        background.widthAnchor.constraint(equalToConstant: backWidth).isActive = true
-        background.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        background.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
+        background.widthAnchor.constraint(equalTo: answer.widthAnchor, multiplier: percent).isActive = true
+        background.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        if answer.tag == 1 {
-            // 첫 번째 선택지일 때
-            answer.topAnchor.constraint(equalTo: questionStateLabel.bottomAnchor, constant: 25).isActive = true
-            background.topAnchor.constraint(equalTo: questionStateLabel.bottomAnchor, constant: 25).isActive = true
-        } else {
-            // 두 번째 선택지부터
-            guard let preAnswer = contentView.viewWithTag(answer.tag - 1) else {
-                fatalError("No preAnswer")
-            }
-            answer.topAnchor.constraint(equalTo: preAnswer.bottomAnchor, constant: 10).isActive = true
-            background.topAnchor.constraint(equalTo: preAnswer.bottomAnchor, constant: 10).isActive = true
-        }
+        selected.centerXAnchor.constraint(equalTo: parentView.centerXAnchor).isActive = true
+        selected.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
+        selected.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.7).isActive = true
+        selected.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     
@@ -328,17 +353,17 @@ class VoteViewController: UIViewController {
         
         let voteAction = UIAction(handler: { _ in
             // 해당 answer의 count +1
-            print("voteAction")
             
             self.voteViewStatus = .checkResult
+            self.configureAnswerFieldAfterVote()
             self.viewWillAppear(true)
         })
         
         let returnAction = UIAction(handler: { _ in
             // 결과 화면으로 바로 돌아가기
-            print("returnAction")
             
             self.voteViewStatus = .checkResult
+            self.configureAnswerFieldAfterVote()
             self.viewWillAppear(true)
         })
         
@@ -346,10 +371,6 @@ class VoteViewController: UIViewController {
         resultButton = UIButton(type: .system, primaryAction: returnAction)
         
         setButtonAttribute()
-        
-        // contentView의 subView로 넣으면 contentView에 가려져 터치가 먹지 않음.
-        // contentView의 터치 동작을 무효화시켜봤는데 잘 안됨.
-        // 그래서 contentView의 상위에 버튼 추가.
         
         scrollView.addSubview(voteButton)
         scrollView.addSubview(resultButton)
@@ -374,7 +395,7 @@ class VoteViewController: UIViewController {
     }
     
     private func setButtonConstraint() {
-        guard let preComponent = contentView.viewWithTag(lastTag) else { return }
+        guard let preComponent = scrollView.viewWithTag(lastTag - 1) else { return }
         
         voteButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -60).isActive = true
         resultButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 60).isActive = true
@@ -390,3 +411,17 @@ class VoteViewController: UIViewController {
         self.contentHeight += (voteButton.frame.height + 20)
     }
 }
+
+// 상위 뷰를 지나쳐서 하위 뷰에 탭 이벤트를 전달하기 위함
+//class TransparentView: UIView {
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let hitTestView = super.hitTest(point, with: event)
+//
+//        // 나 자신이 눌렸다면 nil 반환
+//        if hitTestView == self {
+//            return nil
+//        }
+//
+//        return hitTestView
+//    }
+//}
