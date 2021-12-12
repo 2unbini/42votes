@@ -3,7 +3,7 @@
 
 <mapper namespace="com.example.votesspring.mapper.AnswerMapper">
     <resultMap id="rAnswer" type="com.example.votesspring.domain.Answer">
-        <result property="id" column="id"/>
+        <result property="id" column="answer_id"/>
         <result property="questionId" column="question_id"/>
         <result property="answer" column="answer"/>
         <result property="count" column="count"/>
@@ -19,15 +19,15 @@
     </select>
 
     <select id="findById"  resultMap="rAnswer">
-        select * from ANSWER where id = #{id}
+        select * from ANSWER where answer_id = #{id}
     </select>
 
     <update id="updateCountById" parameterType="Answer">
-        update ANSWER SET count = #{count} WHERE id = #{id}
+        update ANSWER SET count = #{count} WHERE answer_id = #{id}
     </update>
 
     <delete id="deleteById">
-        delete from ANSWER where id = #{id}
+        delete from ANSWER where answer_id = #{id}
     </delete>
 
     <delete id="deleteByQuestinoId">

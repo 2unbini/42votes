@@ -3,7 +3,7 @@
 
 <mapper namespace="com.example.votesspring.mapper.QuestionMapper">
     <resultMap id="rQuestion" type="com.example.votesspring.domain.Question">
-        <result property="id" column="id"/>
+        <result property="id" column="question_id"/>
         <result property="userId" column="user_id"/>
         <result property="question" column="question"/>
         <result property="isExpired" column="is_expired"/>
@@ -26,7 +26,7 @@
     </select>
 
     <select id="findById" resultMap="rQuestion">
-        select * from QUESTION where id = #{id}
+        select * from QUESTION where question_id = #{id}
     </select>
 
     <select id="findByUserId" resultMap="rQuestion">
@@ -34,6 +34,6 @@
     </select>
 
     <delete id="deleteById">
-        delete from QUESTION where id = #{id}
+        delete from QUESTION where question_id = #{id}
     </delete>
 </mapper>
