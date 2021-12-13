@@ -28,10 +28,10 @@ public class MyBatisConfig {
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setTypeAliasesPackage("com.example.votesspring.domain");
         sqlSessionFactoryBean.setMapperLocations(
-                applicationContext.getResource("classpath:mapper/UserMapperRepo.xml")
-                ,applicationContext.getResource("classpath:mapper/QuestionMapperRepo.xml")
-                ,applicationContext.getResource("classpath:mapper/AnswerMapperRepo.xml")
-                ,applicationContext.getResource("classpath:mapper/AnswerHistoryMapperRepo.xml")
+                applicationContext.getResource("classpath:mapper/UserMapperRepo.xml"),
+                applicationContext.getResource("classpath:mapper/QuestionMapperRepo.xml"),
+                applicationContext.getResource("classpath:mapper/AnswerMapperRepo.xml"),
+                applicationContext.getResource("classpath:mapper/QuestionHistoryMapperRepo.xml")
                 );
         return sqlSessionFactoryBean.getObject();
     }

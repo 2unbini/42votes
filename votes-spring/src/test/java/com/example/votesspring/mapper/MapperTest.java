@@ -1,7 +1,7 @@
 package com.example.votesspring.mapper;
 
 import com.example.votesspring.domain.Answer;
-import com.example.votesspring.domain.AnswerHistory;
+import com.example.votesspring.domain.QuestionHistory;
 import com.example.votesspring.domain.Question;
 import com.example.votesspring.domain.User;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +27,7 @@ class MapperTest {
     private AnswerMapper answerMapper;
 
     @Autowired
-    private AnswerHistoryMapper answerHistoryMapper;
+    private QuestionHistoryMapper questionHistoryMapper;
 
     @Test
     @DisplayName("1. 모든 테이블에 대한 기본 값을 대입하고 매퍼 클래스들이 잘 작동되는지 확인합니다.")
@@ -70,16 +70,16 @@ class MapperTest {
         Assertions.assertNotEquals(0, answerList.get(0).getCount());
 
         // Answer History save and exist test
-        answerHistoryMapper.save(AnswerHistory.builder()
+        Assertions.assertFalse(questionHistoryMapper.existsByUserIdQuestionId(user.get().getId(), questionList.get(0).getId()));
+        questionHistoryMapper.save(QuestionHistory.builder()
                 .userId(user.get().getId())
-                .answerId(answerList.get(0)
+                .questionId(questionList.get(0)
                 .getId())
                 .build());
-        Assertions.assertTrue(answerHistoryMapper.existsByUserIdAnswerId(user.get().getId(), answerList.get(0).getId()));
-        Assertions.assertFalse(answerHistoryMapper.existsByUserIdAnswerId(user.get().getId(), answerList.get(1).getId()));
+        Assertions.assertTrue(questionHistoryMapper.existsByUserIdQuestionId(user.get().getId(), questionList.get(0).getId()));
 
         // Delete Tester
-        answerHistoryMapper.deleteByAllId(user.get().getId(), answerList.get(0).getId());
+        questionHistoryMapper.deleteByAllId(user.get().getId(), questionList.get(0).getId());
         answerList.forEach(answer -> answerMapper.deleteById(answer.getId()));
         questionMapper.deleteById(question.get().getId());
         userMapper.deleteByName(user.get().getUsername());
