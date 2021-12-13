@@ -14,7 +14,7 @@
     </resultMap>
 
     <insert id="save" parameterType="Question">
-        insert into QUESTION (user_id, question, expires_at)
+        insert into question (user_id, question, expires_at)
         values (#{userId}, #{question}, #{expiresAt})
         <selectKey keyProperty="id" resultType="long" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -22,18 +22,18 @@
     </insert>
 
     <select id="findAll" resultMap="rQuestion">
-        select * from QUESTION
+        select * from question
     </select>
 
     <select id="findById" resultMap="rQuestion">
-        select * from QUESTION where question_id = #{id}
+        select * from question where question_id = #{id}
     </select>
 
     <select id="findByUserId" resultMap="rQuestion">
-        select * from QUESTION where user_id = #{userId}
+        select * from question where user_id = #{userId}
     </select>
 
     <delete id="deleteById">
-        delete from QUESTION where question_id = #{id}
+        delete from question where question_id = #{id}
     </delete>
 </mapper>
