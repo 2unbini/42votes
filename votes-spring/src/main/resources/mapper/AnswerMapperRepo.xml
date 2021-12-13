@@ -10,27 +10,27 @@
     </resultMap>
 
     <insert id="save" parameterType="Answer">
-        insert into ANSWER (question_id, answer)
+        insert into answer (question_id, answer)
         values (#{questionId}, #{answer})
     </insert>
 
     <select id="findAllByQuestionId"  resultMap="rAnswer">
-        select * from ANSWER where question_id = #{questionId}
+        select * from answer where question_id = #{questionId}
     </select>
 
     <select id="findById"  resultMap="rAnswer">
-        select * from ANSWER where answer_id = #{id}
+        select * from answer where answer_id = #{id}
     </select>
 
     <update id="updateCountById" parameterType="Answer">
-        update ANSWER SET count = #{count} WHERE answer_id = #{id}
+        update answer SET count = #{count} WHERE answer_id = #{id}
     </update>
 
     <delete id="deleteById">
-        delete from ANSWER where answer_id = #{id}
+        delete from answer where answer_id = #{id}
     </delete>
 
     <delete id="deleteByQuestinoId">
-        delete from ANSWER where question_id = #{questionId}
+        delete from answer where question_id = #{questionId}
     </delete>
 </mapper>
