@@ -1,8 +1,10 @@
 -- Drop All Table if Table Exist
-DROP TABLE IF EXISTS answer_history;
+DROP TABLE IF EXISTS question_history;
 DROP TABLE IF EXISTS answer;
 DROP TABLE IF EXISTS question;
 DROP TABLE IF EXISTS user;
+-- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
+
 -- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
 
 -- user Table Create SQL
@@ -58,21 +60,21 @@ ALTER TABLE answer
         REFERENCES question (question_id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
--- answer_history Table Create SQL
-CREATE TABLE answer_history
+-- question_history Table Create SQL
+CREATE TABLE question_history
 (
-    `answer_history_id`  BIGINT    NOT NULL    AUTO_INCREMENT COMMENT 'question history id',
-    `user_id`            BIGINT    NOT NULL    COMMENT 'user id',
-    `answer_id`          BIGINT    NOT NULL    COMMENT 'answer id',
-    PRIMARY KEY (answer_history_id)
+    `question_history_id`  BIGINT    NOT NULL    AUTO_INCREMENT COMMENT 'question history id',
+    `user_id`              BIGINT    NOT NULL    COMMENT 'user id',
+    `question_id`          BIGINT    NOT NULL    COMMENT 'question id',
+    PRIMARY KEY (question_history_id)
 );
 
-ALTER TABLE answer_history COMMENT '같은 유저가 같은 질문에 두번 답하는 것을 방지합니다.';
+ALTER TABLE question_history COMMENT '같은 유저가 같은 질문에 두번 답하는 것을 방지합니다.';
 
-ALTER TABLE answer_history
-    ADD CONSTRAINT FK_answer_history_user_id_user_user_id FOREIGN KEY (user_id)
+ALTER TABLE question_history
+    ADD CONSTRAINT FK_question_history_user_id_user_user_id FOREIGN KEY (user_id)
         REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE answer_history
-    ADD CONSTRAINT FK_answer_history_answer_id_answer_answer_id FOREIGN KEY (answer_id)
-        REFERENCES answer (answer_id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE question_history
+    ADD CONSTRAINT FK_question_history_question_id_question_question_id FOREIGN KEY (question_id)
+        REFERENCES question (question_id) ON DELETE RESTRICT ON UPDATE RESTRICT;

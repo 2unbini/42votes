@@ -9,17 +9,17 @@ import org.apache.ibatis.type.Alias;
 @NoArgsConstructor
 @Getter
 @Setter
-@Alias("AnswerHistory")
-public class AnswerHistory {
+@Alias("QuestionHistory")
+public class QuestionHistory {
 
     private Long id;
     private Long userId;
-    private Long answerId;
+    private Long questionId;
 
     @Builder
-    public AnswerHistory(Long id, Long userId, Long answerId) {
+    public QuestionHistory(Long id, Long userId, Long questionId) {
         this.id = id;
         this.userId = userId;
-        this.answerId = answerId;
+        this.questionId = questionId;
     }
 }
