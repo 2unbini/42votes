@@ -13,20 +13,20 @@
     </resultMap>
 
     <insert id="save" parameterType="User">
-        insert into USER (username, password, email, deleted_at)
+        insert into user(username, password, email, deleted_at)
         values (#{username}, #{password}, #{email}, #{deletedAt})
     </insert>
 
     <select id="findAll" resultMap="rUser">
-        select * from USER
+        select * from user
     </select>
 
     <select id="findByName" resultMap="rUser">
-        select * from USER where username = #{username}
+        select * from user where username = #{username}
     </select>
 
 
     <delete id="deleteByName">
-        delete from USER where username = #{username}
+        delete from user where username = #{username}
     </delete>
 </mapper>
