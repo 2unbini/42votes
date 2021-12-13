@@ -9,42 +9,53 @@ import UIKit
 
 class HomeViewController: UITableViewController {
     
-    // 테스트 데이터
-    // 서버에서 데이터 가져올 땐 추가 메서드 구현 필요
-    lazy var list: [QuestionVO] = {
-        var ret = [QuestionVO]()
-        
-        for (id, question, isExpired) in dataSet {
-            let data = QuestionVO()
-            data.id = id
-            data.question = question
-            data.isExpired = isExpired
-            
-            ret.append(data)
-        }
-        return ret
-    }()
+    var list = [Question]()
     
-    lazy var voteData: Vote = {
-        var ret = Vote()
-        
-        ret.question = QuestionVO()
-        ret.answers = [AnswerVO]()
-        
-        ret.question?.question = "가장 좋아하는 42 과제는?"
-        ret.question?.isExpired = false
-        
-        for (answer, count, id) in answerDataSet {
-            let data = AnswerVO()
-            data.answer = answer
-            data.count = count
-            data.id = id
-            
-            ret.answers?.append(data)
-        }
-        return ret
-    }()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        getQuestionList()
+    }
     
+    
+    // MARK: - HTTP
+    
+    private func getQuestionList() {
+        let url = "http://42votes.site/v1/questions/all"
+
+        let apiURI: URL! = URL(string: url)
+        
+        var request = URLRequest(url: apiURI)
+        
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            guard let data = data else {
+                print("Error: Did not receive data")
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                print("Error: HTTP request failed")
+                return
+            }
+            
+            let decoder = JSONDecoder()
+            
+            guard let output = try? decoder.decode([Question].self, from: data) else {
+                print(error?.localizedDescription)
+                return
+            }
+            
+            print(output)
+            
+            DispatchQueue.main.async {
+                self.list = output
+                self.tableView.reloadData()
+            }
+            
+        }.resume()
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.list.count
@@ -58,10 +69,8 @@ class HomeViewController: UITableViewController {
             return
         }
         
-        voteVC.voteData = voteData
+        voteVC.questionId = list[indexPath.row].id
         self.navigationController?.pushViewController(voteVC, animated: true)
-        
-        // question id를 이용해 데이터 세팅한 뒤 Vote뷰로 이동
     }
 
     
@@ -73,7 +82,7 @@ class HomeViewController: UITableViewController {
         
         label?.numberOfLines = 0
         
-        if row.isExpired == true {
+        if row.isExpired == false {
             label?.text = labelText
         } else {
             label?.textColor = UIColor.lightGray
