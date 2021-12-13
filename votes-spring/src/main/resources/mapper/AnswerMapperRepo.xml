@@ -31,6 +31,6 @@
     </delete>
 
     <delete id="deleteByQuestinoId">
-        delete from ANSWER where question_id = #{questionId}
+        delete from answer where question_id = #{questionId}
     </delete>
 </mapper>
