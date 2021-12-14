@@ -52,8 +52,8 @@ class VoteViewController: UIViewController {
     
     
     // MARK: - Variables
-    // HomeViewController 에서 넘어옴
-    var voteData: Vote!
+    var questionId: Int!
+    var voteData = Vote()
     var allVotesCount = 0
     
     var lastTag = 1

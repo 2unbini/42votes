@@ -7,21 +7,24 @@
 
 import Foundation
 
-// Create New Vote
+// Fetch Seleced Vote
 
-class NewVote {
-    var question: String?
+class Vote: Codable {
+    var question: Question?
     var answers: [Answer]?
+}
+
+// New Vote
+
+class NewVote: Codable {
+    var answers: [String]?
+    var question: String?
     var expiresAt: Date?
 }
 
-class Answer {
-    var answer: String?
-}
+// User's vote
 
-// Set Vote Info
-
-class Vote {
-    var answers: [AnswerVO]?
-    var question: QuestionVO?
+class UserVote: Codable {
+    var answerId: Int?
+    var questionId: Int?
 }
