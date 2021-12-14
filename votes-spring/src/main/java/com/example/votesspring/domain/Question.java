@@ -18,18 +18,16 @@ public class Question{
     private Long id;
     private Long userId;
     private String question;
-    private Boolean isExpired;
     private LocalDateTime expiresAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
     @Builder
-    public Question(Long id, Long userId, String question, Boolean isExpired, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+    public Question(Long id, Long userId, String question, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.id = id;
         this.userId = userId;
         this.question = question;
-        this.isExpired = isExpired;
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -40,7 +38,7 @@ public class Question{
         return QuestionResponseDto.builder()
                 .id(this.id)
                 .question(this.question)
-                .isExpired(isExpired)
+                .expiresAt(this.expiresAt)
                 .build();
     }
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -11,13 +12,15 @@ import java.util.List;
 public class QuestionResponseDto {
     private Long id;
     private String question;
+    private LocalDateTime expiresAt;
     private Boolean isExpired;
 
     @Builder
-    public QuestionResponseDto(Long id, String question, Boolean isExpired) {
+    public QuestionResponseDto(Long id, String question, LocalDateTime expiresAt, Boolean isExpired) {
         this.id = id;
         this.question = question;
-        this.isExpired = isExpired;
+        this.expiresAt = expiresAt;
+        this.isExpired = expiresAt.isBefore(LocalDateTime.now());
     }
 
     @Deprecated
