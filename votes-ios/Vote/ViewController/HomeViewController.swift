@@ -9,23 +9,21 @@ import UIKit
 
 class HomeViewController: UITableViewController {
     
-    var list = [Question]()
+    var allVoteList = [Question]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getQuestionList()
+        getAllVoteList()
     }
     
     
     // MARK: - HTTP
     
-    private func getQuestionList() {
-        let url = "http://42votes.site/v1/questions/all"
-
-        let apiURI: URL! = URL(string: url)
+    private func getAllVoteList() {
+        let baseURL = "http://42votes.site/v1/questions/all"
+        let apiURI: URL! = URL(string: baseURL)
         
         var request = URLRequest(url: apiURI)
-        
         request.httpMethod = "GET"
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -41,16 +39,19 @@ class HomeViewController: UITableViewController {
             }
             
             let decoder = JSONDecoder()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            decoder.dateDecodingStrategy = .formatted(dateFormatter)
             
             guard let output = try? decoder.decode([Question].self, from: data) else {
-                print(error?.localizedDescription)
+                print("data decode failed")
                 return
             }
             
             print(output)
             
             DispatchQueue.main.async {
-                self.list = output
+                self.allVoteList = output
                 self.tableView.reloadData()
             }
             
@@ -58,7 +59,7 @@ class HomeViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.list.count
+        return self.allVoteList.count
     }
     
     
@@ -69,13 +70,13 @@ class HomeViewController: UITableViewController {
             return
         }
         
-        voteVC.questionId = list[indexPath.row].id
+        voteVC.questionId = allVoteList[indexPath.row].id
         self.navigationController?.pushViewController(voteVC, animated: true)
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = self.list[indexPath.row]
+        let row = self.allVoteList[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "voteList", for: indexPath)
         let label = cell.viewWithTag(Tag.voteList.rawValue) as? UILabel
         let labelText = "Q. " + (row.question ?? "")
@@ -95,7 +96,7 @@ class HomeViewController: UITableViewController {
     // 각 행의 높이 지정
     // 글자 수가 일정 개수 이상이면 연산을 통해 높이 늘리기
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = self.list[indexPath.row]
+        let row = self.allVoteList[indexPath.row]
         let height = CGFloat(50 + (row.question!.count / 25) * 30)
         
         return height
