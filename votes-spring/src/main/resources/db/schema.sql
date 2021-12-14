@@ -32,7 +32,6 @@ CREATE TABLE question
     `expires_at`   DATETIME        NOT NULL    COMMENT '투표 기한',
     `created_at`   DATETIME        NOT NULL    DEFAULT NOW() COMMENT '생성된 시간',
     `deleted_at`   DATETIME        NULL        COMMENT '삭제된 시간',
-    `is_expired`   BIT             NULL        COMMENT '투표 마감 여부',
     PRIMARY KEY (question_id)
 );
 

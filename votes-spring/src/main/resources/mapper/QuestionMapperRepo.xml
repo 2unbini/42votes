@@ -6,7 +6,6 @@
         <result property="id" column="question_id"/>
         <result property="userId" column="user_id"/>
         <result property="question" column="question"/>
-        <result property="isExpired" column="is_expired"/>
         <result property="expiresAt" column="expires_at"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>

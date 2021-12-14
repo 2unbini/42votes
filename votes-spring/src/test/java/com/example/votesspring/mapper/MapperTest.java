@@ -30,8 +30,8 @@ class MapperTest {
     private QuestionHistoryMapper questionHistoryMapper;
 
     @Test
-    @DisplayName("1. 모든 테이블에 대한 기본 값을 대입하고 매퍼 클래스들이 잘 작동되는지 확인합니다.")
-    void saveAndDelete() {
+    @DisplayName("1. 모든 매퍼 클래스들의 메서드 잘 작동되는지 확인합니다.")
+    void AllMapperTest() {
         //User save and find test
         userMapper.save(User.builder()
                 .username("userTester")
