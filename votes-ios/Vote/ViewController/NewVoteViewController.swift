@@ -41,43 +41,87 @@ class NewVoteViewController: UIViewController {
     // 새 투표 저장한 뒤 이전 화면으로 돌아가기
     @IBAction func saveNewVote() {
         
-        let newVote = NewVote()
-        let question = self.contentView.viewWithTag(Tag.questionTextView.rawValue) as? UITextView
-        let date = self.contentView.viewWithTag(Tag.dueDatePicker.rawValue) as? UIDatePicker
-        
-        newVote.question = question?.text
-        newVote.answers = [Answer]()
-        newVote.expiresAt = date?.date
-        
-        if question?.textColor == UIColor.lightGray || question?.text == "" {
-            alertAccured(message: "질문을 입력하세요.")
-            return
+        if let newVote = makeNewVote() {
+            let encodedData = encodeData(with: newVote)
+            postNewVote(with: encodedData)
+            self.navigationController?.popViewController(animated: true)
         }
-        
-        for i in answerIndexArray {
-            let answer = self.contentView.viewWithTag(i) as? UITextView
-            let convertedAnswer = Answer()
-            
-            if answer?.textColor == UIColor.lightGray || answer?.text == "" {
-                alertAccured(message: "선택지를 입력하세요.")
-                return
-            }
-            convertedAnswer.answer = answer?.text
-            newVote.answers?.append(convertedAnswer)
-        }
-        
-        if date!.date <= Date() {
-            alertAccured(message: "투표 종료 날짜가 유효하지 않습니다.")
-            return
-        }
-        
-        self.navigationController?.popViewController(animated: true)
     }
     
     private func alertAccured(message: String) {
         let alert = UIAlertController(title: "알림", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(alert, animated: true)
+    }
+    
+    private func makeNewVote() -> NewVote? {
+        let newVote = NewVote()
+        let question = self.contentView.viewWithTag(Tag.questionTextView.rawValue) as? UITextView
+        let date = self.contentView.viewWithTag(Tag.dueDatePicker.rawValue) as? UIDatePicker
+        
+        newVote.question = question?.text
+        newVote.answers = [String]()
+        newVote.expiresAt = date?.date
+        
+        if question?.textColor == UIColor.lightGray || question?.text == "" {
+            alertAccured(message: "질문을 입력하세요.")
+            return nil
+        }
+        
+        for i in answerIndexArray {
+            guard let answerView = self.contentView.viewWithTag(i) as? UITextView else { fatalError("No AnswerView with tag \(i) Found") }
+            
+            if answerView.textColor == UIColor.lightGray || answerView.text == "" {
+                alertAccured(message: "선택지를 입력하세요.")
+                return nil
+            }
+            newVote.answers?.append(answerView.text)
+        }
+        
+        if date!.date <= Date() {
+            alertAccured(message: "투표 종료 날짜가 유효하지 않습니다.")
+            return nil
+        }
+        
+        return newVote
+    }
+    
+    private func encodeData(with newVote: NewVote) -> Data {
+        let encoder = JSONEncoder()
+        let dateFormatter = DateFormatter()
+        var encodedData: Data
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        encoder.dateEncodingStrategy = .formatted(dateFormatter)
+        
+        do {
+            encodedData = try encoder.encode(newVote)
+        }
+        catch {
+            fatalError("Cannot encode Data")
+        }
+        
+        return encodedData
+    }
+    
+    private func postNewVote(with data: Data) {
+        let baseURL = "http://42votes.site/v1/questions/my/"
+        let userId = "1"
+        let apiURI: URL! = URL(string: baseURL + userId)
+        
+        var request = URLRequest(url: apiURI)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard data != nil else {
+                fatalError()
+            }
+            guard let response = response as? HTTPURLResponse, (200..<299) ~= response.statusCode else {
+                fatalError()
+            }
+        }.resume()
     }
     
     

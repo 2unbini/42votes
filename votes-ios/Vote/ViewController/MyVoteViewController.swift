@@ -13,8 +13,25 @@ class MyVoteViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        configureRefreshControl()
         getMyVoteList()
+    }
+    
+    // MARK: - Refresh
+    
+    private func configureRefreshControl() {
+        self.tableView.refreshControl = UIRefreshControl()
+        self.tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+    }
+    
+    @objc func handleRefreshControl() {
+        // Update Content
+        getMyVoteList()
+        
+        // Dismiss the refresh control
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
     }
     
     private func getMyVoteList() {
@@ -69,8 +86,6 @@ class MyVoteViewController: UITableViewController {
         
         voteVC.questionId = myVoteList[indexPath.row].id
         self.navigationController?.pushViewController(voteVC, animated: true)
-        
-        // question id를 이용해 데이터 세팅한 뒤 Vote뷰로 이동
     }
 
     
@@ -82,7 +97,11 @@ class MyVoteViewController: UITableViewController {
         
         label?.numberOfLines = 0
         
-        if row.isExpired == true {
+        // Clear Attributes of label text
+        label?.textColor = UIColor.black
+        label?.attributedText = NSAttributedString(string: "")
+        
+        if row.isExpired == false {
             label?.text = labelText
         } else {
             label?.textColor = UIColor.lightGray
@@ -101,6 +120,7 @@ class MyVoteViewController: UITableViewController {
         return height
     }
     
+    // TODO: Not working
     // 스와이프해서 삭제
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
