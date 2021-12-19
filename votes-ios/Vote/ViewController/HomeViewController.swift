@@ -13,9 +13,26 @@ class HomeViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureRefreshControl()
         getAllVoteList()
     }
     
+    // MARK: - Refresh
+    
+    func configureRefreshControl() {
+        self.tableView.refreshControl = UIRefreshControl()
+        self.tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+    }
+    
+    @objc func handleRefreshControl() {
+        // Update Content
+        getAllVoteList()
+        
+        // Dismiss the refresh control
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
     
     // MARK: - HTTP
     
@@ -48,8 +65,6 @@ class HomeViewController: UITableViewController {
                 return
             }
             
-            print(output)
-            
             DispatchQueue.main.async {
                 self.allVoteList = output
                 self.tableView.reloadData()
@@ -80,12 +95,16 @@ class HomeViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "voteList", for: indexPath)
         let label = cell.viewWithTag(Tag.voteList.rawValue) as? UILabel
         let labelText = "Q. " + (row.question ?? "")
-        
+
         label?.numberOfLines = 0
+        
+        // Clear Attributes of label text
+        label?.textColor = UIColor.black
+        label?.attributedText = NSAttributedString(string: "")
         
         if row.isExpired == false {
             label?.text = labelText
-        } else {
+        } else if row.isExpired == true {
             label?.textColor = UIColor.lightGray
             label?.attributedText = labelText.strikeThrough()
         }
