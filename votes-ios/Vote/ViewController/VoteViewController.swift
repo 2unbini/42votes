@@ -30,7 +30,7 @@ class VoteViewController: UIViewController {
         
         questionLabel.textAlignment = .center
         questionLabel.numberOfLines = 0
-        questionLabel.text = voteData.question?.question
+        questionLabel.text = vote.question?.question
         questionLabel.font = .systemFont(ofSize: 23, weight: .bold)
         
         questionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -52,8 +52,7 @@ class VoteViewController: UIViewController {
     
     
     // MARK: - Variables
-    var questionId: Int!
-    var voteData = Vote()
+    var vote: Vote!
     var allVotesCount = 0
     
     var lastTag = 1
@@ -66,13 +65,8 @@ class VoteViewController: UIViewController {
     var voteViewStatus = VoteViewStatus.beforeVote
     
 
-    // MARK: - System Functions
-    
     override func viewDidLoad() {
-        // 뷰 초기 생성
-        
         super.viewDidLoad()
-        
         getAllVotesCount()
         configureScrollField()
         configureQuestionField()
@@ -87,28 +81,24 @@ class VoteViewController: UIViewController {
         scrollView.contentSize.height = contentHeight
     }
     
-    // MARK: - Not Complete
-    // 공유 기능 추가해야 함.
-    
+    // TODO: 공유 기능
     @IBAction func shareVote(_ sender: Any) {
         // share vote
         print("share button clicked")
     }
     
-    
-    // MARK: - Non View Configuration
-    
     private func getAllVotesCount() {
-        if let answers = voteData.answers {
+        if let answers = vote.answers {
             
             for answer in answers {
                 allVotesCount += answer.count ?? 0
             }
         }
     }
-    
-    
-    // MARK: - Configure Scroll Field
+}
+
+// MARK: - Configure Scroll Field
+extension VoteViewController {
     
     private func configureScrollField() {
         view.addSubview(scrollView)
@@ -133,20 +123,21 @@ class VoteViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
-    
-    
-    // MARK: - Congifure Question Field
+}
+
+// MARK: - Congifure Question Field
+extension VoteViewController {
     
     private func configureQuestionField() {
         contentView.addSubview(questionLabel)
         contentView.addSubview(questionStateLabel)
         
-        if voteData.question?.isExpired == true {
+        if vote.question?.isExpired == true {
             questionLabel.textColor = UIColor.lightGray
             questionStateLabel.text = "종료된 설문입니다."
             questionStateLabel.textColor = UIColor.lightGray
         }
-        else if voteData.question?.isExpired == false {
+        else if vote.question?.isExpired == false {
             questionStateLabel.text = "진행중인 설문입니다."
         }
         
@@ -169,13 +160,14 @@ class VoteViewController: UIViewController {
         
         self.contentHeight += (questionStateLabel.frame.height + 15)
     }
-    
-    
-    // MARK: - Configure Answer Field
+}
+
+// MARK: - Configure Answer Field
+extension VoteViewController {
     
     private func configureAnswerField() {
         
-        if let answerList = voteData.answers {
+        if let answerList = vote.answers {
             for elem in answerList {
                 
                 guard let text = elem.answer else { return }
@@ -220,7 +212,7 @@ class VoteViewController: UIViewController {
                     return selectedBack
                 }()
                 
-                let percent = CGFloat((Float(count) / Float(allVotesCount)))
+                let percent = allVotesCount == 0 ? 0 : CGFloat((Float(count) / Float(allVotesCount)))
                 
                 setAnswerTextLabelAttribute(textLabel)
                 setAnswerResultBarAttribute(resultBar)
@@ -257,9 +249,9 @@ class VoteViewController: UIViewController {
         childBackgroundView.backgroundColor = .systemBlue.withAlphaComponent(0.5)
         selectedAnswerTag = childBackgroundView.tag
         viewWillAppear(true)
-
     }
     
+    // TODO: 이미 투표한 경우, 바로 결과 보여주도록 설정
     // 이미 투표한 경우, 바로 결과 보여주도록 backLabel attribute 설정
     private func configureAnswerFieldAfterVote() {
         if isAnswerViewLoadedBefore && lastTag != 1 {
@@ -287,7 +279,7 @@ class VoteViewController: UIViewController {
         textLabel.layer.borderWidth = 1.5
         textLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
         
-        if voteData.question?.isExpired == true {
+        if vote.question?.isExpired == true {
             textLabel.textColor = UIColor.lightGray
             textLabel.layer.borderColor = UIColor.lightGray.cgColor
         }
@@ -296,7 +288,7 @@ class VoteViewController: UIViewController {
     private func setAnswerResultBarAttribute(_ backLabel: UILabel) {
         backLabel.numberOfLines = 0
         
-        if voteData.question?.isExpired == true {
+        if vote.question?.isExpired == true {
             backLabel.backgroundColor = UIColor.lightGray.withAlphaComponent(0.4)
         } else {
             if voteViewStatus == .beforeVote {
@@ -342,12 +334,14 @@ class VoteViewController: UIViewController {
         selected.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.7).isActive = true
         selected.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
-    
-    
-    // MARK: - Configure Button Field
+}
+
+// MARK: - Configure Button Field
+extension VoteViewController {
     
     private func configureButtonField() {
         
+        // TODO: 버튼 눌렀을 때 서버에 투표하기
         let voteAction = UIAction(handler: { _ in
             // 해당 answer의 count +1
             
@@ -408,17 +402,3 @@ class VoteViewController: UIViewController {
         self.contentHeight += (voteButton.frame.height + 20)
     }
 }
-
-// 상위 뷰를 지나쳐서 하위 뷰에 탭 이벤트를 전달하기 위함
-//class TransparentView: UIView {
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitTestView = super.hitTest(point, with: event)
-//
-//        // 나 자신이 눌렸다면 nil 반환
-//        if hitTestView == self {
-//            return nil
-//        }
-//
-//        return hitTestView
-//    }
-//}
