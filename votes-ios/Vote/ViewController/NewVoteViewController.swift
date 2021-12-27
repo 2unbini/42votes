@@ -162,11 +162,12 @@ extension NewVoteViewController {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard data != nil else {
-                fatalError()
+                fatalError("nil found in data")
             }
             guard let response = response as? HTTPURLResponse, (200..<299) ~= response.statusCode else {
-                fatalError()
+                fatalError("response: \(String(describing: response))")
             }
+            
         }.resume()
     }
 }
@@ -375,7 +376,7 @@ extension NewVoteViewController {
     private func setButtonAttribute(action: String) -> UIButton {
         
         let add = UIAction(handler: {_ in
-            if self.answerIndexArray.count < 50 {
+            if self.answerIndexArray.count < 10 {
                 let newAnswerField = self.setTextViewAttribute(placeholder: "선택지를 입력하세요.")
                 self.answerIndexArray.append(newAnswerField.tag)
                 
@@ -383,8 +384,8 @@ extension NewVoteViewController {
                 self.contentView.addSubview(newAnswerField)
                 self.setTextViewConstraint(newAnswerField.tag)
                 
-                self.buttonViewConstraint.constant += 45
-                self.contentViewHeight += 45
+                self.buttonViewConstraint.constant += 49
+                self.contentViewHeight += 49
                 self.view.layoutIfNeeded()
             }
         })
@@ -397,8 +398,8 @@ extension NewVoteViewController {
                     self.answerIndexArray.removeLast()
                     self.viewIndex -= 1
                     
-                    self.buttonViewConstraint.constant -= 45
-                    self.contentViewHeight -= 45
+                    self.buttonViewConstraint.constant -= 49
+                    self.contentViewHeight -= 49
                     self.view.layoutIfNeeded()
                 }
             }
