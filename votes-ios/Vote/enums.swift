@@ -13,8 +13,9 @@ import Foundation
 // 201: addButton
 // 202: deleteButton
 
+// TODO: View별 태그 나누기
 enum Tag: Int {
-    case scrollView = 300
+    case invalid = -1
     case contentView = 1
     case questionLabel = 2
     case questionTextView = 3
@@ -27,10 +28,27 @@ enum Tag: Int {
     case dueDateLabel = 203
     case dateLabel = 204
     case dueDatePicker = 205
+    case scrollView = 300
+}
+
+enum VoteViewTag: Int {
+    case invalid = -1
+    case startAnswer = 1
+    case selected = 200
+    case background = 300
 }
 
 enum VoteViewStatus {
     case beforeVote
     case afterVote
     case checkResult
+    case expiredVote
+}
+
+enum URLs: String {
+    case base = "http://42votes.site/v1/"
+    case allQuestions = "questions/all"
+    case myQuestion = "questions/my/"
+    case question = "questions/"
+    case answer = "answers/"
 }

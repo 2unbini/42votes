@@ -53,25 +53,32 @@ class VoteViewController: UIViewController {
     
     // MARK: - Variables
     var vote: Vote!
-    var allVotesCount = 0
+    var allVotesCount: Int = 0
     
-    var lastTag = 1
-    var loadTag = 1
+    var answerTag: Int = VoteViewTag.startAnswer.rawValue
+    var loadTag: Int = 1
     var contentHeight: CGFloat = 0
     
     // 버튼 누를 때마다 상태 변화 저장
-    var selectedAnswerTag = -1
-    var isAnswerViewLoadedBefore = false
-    var voteViewStatus = VoteViewStatus.beforeVote
-    
+    var selectedAnswerTag: Int = VoteViewTag.invalid.rawValue
+    var isAnswerViewLoadedBefore: Bool = false
+    var voteViewStatus: VoteViewStatus = .beforeVote
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if vote.question?.isExpired == true {
+            voteViewStatus = .expiredVote
+        }
         getAllVotesCount()
         configureScrollField()
         configureQuestionField()
         configureAnswerField()
         configureButtonField()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        // TODO: 새로 계산된 값으로 AnswerField configure 필요
     }
     
     override func viewDidLayoutSubviews() {
@@ -138,6 +145,7 @@ extension VoteViewController {
             questionStateLabel.textColor = UIColor.lightGray
         }
         else if vote.question?.isExpired == false {
+            // TODO: 시간 계산해서 카운트다운
             questionStateLabel.text = "진행중인 설문입니다."
         }
         
@@ -177,7 +185,7 @@ extension VoteViewController {
                     let answerView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
                     let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapFunction(sender:)))
 
-                    answerView.tag = lastTag
+                    answerView.tag = answerTag
                     answerView.isUserInteractionEnabled = true
                     answerView.addGestureRecognizer(tap)
                     answerView.translatesAutoresizingMaskIntoConstraints = false
@@ -187,7 +195,6 @@ extension VoteViewController {
                 let textLabel: UILabel = {
                     let textLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
                     
-                    textLabel.tag = lastTag
                     textLabel.text = "  " + text
                     
                     textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -196,8 +203,8 @@ extension VoteViewController {
                 
                 let resultBar: UILabel = {
                     let resultBar = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
-  
-                    resultBar.tag = lastTag + 100
+                    
+                    resultBar.tag = answerTag + VoteViewTag.background.rawValue
 
                     resultBar.translatesAutoresizingMaskIntoConstraints = false
                     return resultBar
@@ -206,7 +213,7 @@ extension VoteViewController {
                 let selectedBack: UILabel = {
                     let selectedBack = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
                     
-                    selectedBack.tag = lastTag + 200
+                    selectedBack.tag = answerTag + VoteViewTag.selected.rawValue
                     
                     selectedBack.translatesAutoresizingMaskIntoConstraints = false
                     return selectedBack
@@ -224,9 +231,10 @@ extension VoteViewController {
                 
                 setAnswerViewConstraints(answerView)
                 setAnswerConstraints(answerView, [textLabel, resultBar, selectedBack], percent)
-                lastTag += 1
+                answerTag += 1
             }
             
+            answerTag -= 1
             isAnswerViewLoadedBefore = true
         }
     }
@@ -238,10 +246,11 @@ extension VoteViewController {
             print("Tap Answer Locked")
             return
         }
-        guard let parentView = sender.view else { fatalError("No parent View") }
-        guard let childBackgroundView = parentView.viewWithTag(parentView.tag + 200) else { fatalError("No child Background View") }
         
-        if selectedAnswerTag != -1 && childBackgroundView.tag != selectedAnswerTag {
+        guard let parentView = sender.view else { fatalError("No parent View") }
+        guard let childBackgroundView = parentView.viewWithTag(parentView.tag + VoteViewTag.selected.rawValue) else { fatalError("No child Background View") }
+        
+        if selectedAnswerTag != VoteViewTag.invalid.rawValue && childBackgroundView.tag != selectedAnswerTag {
             guard let preSelectedAnswerView = scrollView.viewWithTag(selectedAnswerTag) else { fatalError("No previous selected Answer View") }
             preSelectedAnswerView.backgroundColor = .clear
         }
@@ -251,13 +260,11 @@ extension VoteViewController {
         viewWillAppear(true)
     }
     
-    // TODO: 이미 투표한 경우, 바로 결과 보여주도록 설정
-    // 이미 투표한 경우, 바로 결과 보여주도록 backLabel attribute 설정
     private func configureAnswerFieldAfterVote() {
-        if isAnswerViewLoadedBefore && lastTag != 1 {
-            for _ in 1...(lastTag - 1) {
+        if isAnswerViewLoadedBefore && answerTag != 1 {
+            for _ in 1...(answerTag) {
                 if let answerView = scrollView.viewWithTag(loadTag) {
-                    if let backLabel = answerView.viewWithTag(loadTag + 100) {
+                    if let backLabel = answerView.viewWithTag(loadTag + VoteViewTag.background.rawValue) {
                         
                         if voteViewStatus == .beforeVote {
                             backLabel.backgroundColor = UIColor.clear
@@ -304,7 +311,7 @@ extension VoteViewController {
         answerView.widthAnchor.constraint(equalTo: self.contentView.widthAnchor, multiplier: 0.8).isActive = true
         answerView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-        if answerView.tag == 1 {
+        if answerView.tag == VoteViewTag.startAnswer.rawValue {
             answerView.topAnchor.constraint(equalTo: questionStateLabel.bottomAnchor, constant: 25).isActive = true
             self.contentHeight += (answerView.frame.height + 25)
         } else {
@@ -337,22 +344,26 @@ extension VoteViewController {
 }
 
 // MARK: - Configure Button Field
+
+extension UIButton {
+    func disable() {
+        self.isEnabled = false
+        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.setTitleColor(.lightGray, for: .normal)
+    }
+}
+
 extension VoteViewController {
     
     private func configureButtonField() {
         
-        // TODO: 버튼 눌렀을 때 서버에 투표하기
+        // TODO: 버튼 눌렀을 때 새로 count된 값 계산해서 뷰로 생성
         let voteAction = UIAction(handler: { _ in
-            // 해당 answer의 count +1
-            
-            self.voteViewStatus = .checkResult
-            self.configureAnswerFieldAfterVote()
-            self.viewWillAppear(true)
+            // TODO: 해당 answer의 count +1
+            self.sendUserVote()
         })
         
         let returnAction = UIAction(handler: { _ in
-            // 결과 화면으로 바로 돌아가기
-            
             self.voteViewStatus = .checkResult
             self.configureAnswerFieldAfterVote()
             self.viewWillAppear(true)
@@ -362,6 +373,11 @@ extension VoteViewController {
         resultButton = UIButton(type: .system, primaryAction: returnAction)
         
         setButtonAttribute()
+        
+        if vote.question?.isExpired == true {
+            voteButton.disable()
+            resultButton.disable()
+        }
       
         scrollView.addSubview(voteButton)
         scrollView.addSubview(resultButton)
@@ -386,7 +402,7 @@ extension VoteViewController {
     }
     
     private func setButtonConstraint() {
-        guard let preComponent = scrollView.viewWithTag(lastTag - 1) else { return }
+        guard let preComponent = scrollView.viewWithTag(answerTag) else { return }
         
         voteButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -60).isActive = true
         resultButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 60).isActive = true
@@ -400,5 +416,54 @@ extension VoteViewController {
         resultButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         self.contentHeight += (voteButton.frame.height + 20)
+    }
+}
+
+// MARK: HTTP Request Method
+extension VoteViewController {
+    private func sendUserVote() {
+        // Configure userVote
+        let userVote = UserVote()
+        
+        let selectedAnswerIndex = selectedAnswerTag - VoteViewTag.selected.rawValue - 1
+        if selectedAnswerIndex < 0 {
+            return
+        }
+        userVote.questionId = vote.question?.id
+        userVote.answerId = vote.answers![selectedAnswerIndex].id
+        
+        // Encode Data
+        let encoder = JSONEncoder()
+        let encodedVote = try? encoder.encode(userVote)
+        
+        // Configure url and request
+        let userId = "1"
+        let url: URL! = URL(string: URLs.base.rawValue + URLs.answer.rawValue + userId)
+        var request = URLRequest(url: url)
+        
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = encodedVote
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard data != nil else {
+                fatalError("nil found in data")
+            }
+            
+            guard let response = response else {
+                fatalError("response: \(String(describing: response))")
+            }
+            
+            print(response)
+            
+            DispatchQueue.main.async {
+                // TODO: 일단 유저가 투표 했었는지 안했는지 체크
+                // 했으면 alert 띄우기, 안했으면 아래 내용 유지
+                self.voteViewStatus = .checkResult
+                self.configureAnswerFieldAfterVote()
+                self.viewWillAppear(true)
+            }
+            
+        }.resume()
     }
 }
