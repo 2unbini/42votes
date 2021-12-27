@@ -14,6 +14,7 @@ import Foundation
 // 202: deleteButton
 
 enum Tag: Int {
+    case scrollView = 300
     case contentView = 1
     case questionLabel = 2
     case questionTextView = 3

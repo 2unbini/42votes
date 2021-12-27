@@ -102,13 +102,11 @@ extension MyVoteViewController {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
-                print("Error: Did not receive data")
-                return
+                fatalError("nil found in data")
             }
             
             guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                print("Error: HTTP request failed")
-                return
+                fatalError("response: \(String(describing: response))")
             }
             
             let decoder = JSONDecoder()
@@ -139,13 +137,11 @@ extension MyVoteViewController {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
-                print("Error: Did not receive data")
-                return
+                fatalError("nil found in data")
             }
             
             guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                print("Error: HTTP request failed")
-                return
+                fatalError("response: \(String(describing: response))")
             }
             
             let decoder = JSONDecoder()
