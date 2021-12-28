@@ -3,14 +3,18 @@ package com.example.votesspring.domain;
 
 import lombok.*;
 import org.apache.ibatis.type.Alias;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Alias("User")
-public class User {
+public class User implements UserDetails {
 
     private Long id;
     private String username;
@@ -42,5 +46,30 @@ public class User {
                 ", updatedAt=" + updatedAt +
                 ", deletedAt=" + deletedAt +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new Authority());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.deletedAt == null;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.deletedAt == null;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.deletedAt == null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.deletedAt == null;
     }
 }

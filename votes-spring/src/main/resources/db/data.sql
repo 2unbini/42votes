@@ -1,9 +1,9 @@
 insert into user(username, password, email)
-    VALUES("gpark", "123456", "gpark@gmail.com");
+    VALUES("gpark", "$2a$10$SPCJteBkWrU51.L5QZMZ1O93w5zXISWhfD.gyScJCVMDF2sOBrMki", "gpark@gmail.com");
 insert into user(username, password, email)
-    VALUES("ekwon", "123456", "ekwon@gmail.com");
+    VALUES("ekwon", "$2a$10$SPCJteBkWrU51.L5QZMZ1O93w5zXISWhfD.gyScJCVMDF2sOBrMki", "ekwon@gmail.com");
 insert into user(username, password, email)
-    VALUES("dummy", "123456", "dummy@gmail.com");
+    VALUES("dummy", "$2a$10$SPCJteBkWrU51.L5QZMZ1O93w5zXISWhfD.gyScJCVMDF2sOBrMki", "dummy@gmail.com");
 insert into question(user_id, question, expires_at)
     VALUES(1, "저는 2시간 후에 끝나는 db의 질문입니다.", DATE_ADD(NOW(), INTERVAL 2 HOUR ));
 insert into answer(question_id, answer, count)

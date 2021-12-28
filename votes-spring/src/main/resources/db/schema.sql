@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE user
 (
     `user_id`     BIGINT          NOT NULL    AUTO_INCREMENT COMMENT '유저 id',
-    `username`    VARCHAR(200)    NOT NULL    COMMENT '유저 이름',
+    `username`    VARCHAR(200)    NOT NULL    UNIQUE COMMENT '유저 이름',
     `email`       VARCHAR(200)    NOT NULL    COMMENT '유저 이메일',
     `password`    VARCHAR(200)    NOT NULL    COMMENT '유저 비밀번호',
     `updated_at`  DATETIME        NOT NULL    DEFAULT NOW() COMMENT '업데이트된 시간',

@@ -1,5 +1,6 @@
 package com.example.votesspring.controller;
 
+import com.example.votesspring.domain.User;
 import com.example.votesspring.dto.request.VoteRequestDto;
 import com.example.votesspring.dto.response.QuestionResponseDto;
 import com.example.votesspring.dto.response.VoteResponseDto;
@@ -8,8 +9,10 @@ import com.example.votesspring.exception.model.QuestionNotFoundException;
 import com.example.votesspring.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,7 +35,10 @@ public class QuestionController {
 
     @GetMapping("/all")
     @Operation(summary = "모든 질문을 가져옵니다.")
-    public ResponseEntity<List<QuestionResponseDto>> getAllQuestions() {
+    public ResponseEntity<List<QuestionResponseDto>> getAllQuestions(Principal principal) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = (UsernamePasswordAuthenticationToken) principal;
+        User user = (User) usernamePasswordAuthenticationToken.getPrincipal();
+        Long id = user.getId();
         return ResponseEntity.ok(questionService.findQuestions());
     }
 
