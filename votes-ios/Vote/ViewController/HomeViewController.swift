@@ -9,82 +9,41 @@ import UIKit
 
 class HomeViewController: UITableViewController {
     
-    var list = [Question]()
+    var allVoteList = [Question]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getQuestionList()
+        configureRefreshControl()
+        getAllVoteList()
     }
     
-    
-    // MARK: - HTTP
-    
-    private func getQuestionList() {
-        let url = "http://42votes.site/v1/questions/all"
-
-        let apiURI: URL! = URL(string: url)
-        
-        var request = URLRequest(url: apiURI)
-        
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            guard let data = data else {
-                print("Error: Did not receive data")
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                print("Error: HTTP request failed")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            
-            guard let output = try? decoder.decode([Question].self, from: data) else {
-                print(error?.localizedDescription)
-                return
-            }
-            
-            print(output)
-            
-            DispatchQueue.main.async {
-                self.list = output
-                self.tableView.reloadData()
-            }
-            
-        }.resume()
-    }
-    
+    // 테이블뷰를 구성하는 데이터가 몇 행인지 리턴
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.list.count
+        return self.allVoteList.count
     }
     
-    
+    // 행 선택시, 선택한 투표 데이터 서버로부터 받아오고 VoteView로 이동
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        NSLog("\(indexPath.row) selected...")
-        
-        guard let voteVC = self.storyboard?.instantiateViewController(withIdentifier: "VoteVC") as? VoteViewController else {
-            return
-        }
-        
-        voteVC.questionId = list[indexPath.row].id
-        self.navigationController?.pushViewController(voteVC, animated: true)
+        guard let questionId = allVoteList[indexPath.row].id else { fatalError("nil found in questionId") }
+        getVoteData(from: questionId)
     }
 
-    
+    // 셀 구성
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = self.list[indexPath.row]
+        let row = self.allVoteList[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "voteList", for: indexPath)
         let label = cell.viewWithTag(Tag.voteList.rawValue) as? UILabel
         let labelText = "Q. " + (row.question ?? "")
-        
+
         label?.numberOfLines = 0
+        
+        // 라벨의 속성 초기화
+        label?.textColor = UIColor.black
+        label?.attributedText = NSAttributedString(string: "")
         
         if row.isExpired == false {
             label?.text = labelText
-        } else {
+        } else if row.isExpired == true {
             label?.textColor = UIColor.lightGray
             label?.attributedText = labelText.strikeThrough()
         }
@@ -95,10 +54,111 @@ class HomeViewController: UITableViewController {
     // 각 행의 높이 지정
     // 글자 수가 일정 개수 이상이면 연산을 통해 높이 늘리기
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = self.list[indexPath.row]
+        let row = self.allVoteList[indexPath.row]
         let height = CGFloat(50 + (row.question!.count / 25) * 30)
         
         return height
+    }
+}
+
+// MARK: Handle Refresh Control
+extension HomeViewController {
+    
+    func configureRefreshControl() {
+        self.tableView.refreshControl = UIRefreshControl()
+        self.tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+    }
+    
+    @objc func handleRefreshControl() {
+        // Update Content
+        getAllVoteList()
+        
+        // Dismiss the refresh control
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
+}
+
+// MARK: HTTP Request Method
+extension HomeViewController {
+    
+    private func getAllVoteList() {
+        let baseURL = "http://42votes.site/v1/questions/all"
+        let apiURI: URL! = URL(string: baseURL)
+        
+        var request = URLRequest(url: apiURI)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            guard let data = data else {
+                fatalError("nil found in data")
+            }
+            
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                fatalError("response: \(String(describing: response))")
+            }
+            
+            let decoder = JSONDecoder()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            decoder.dateDecodingStrategy = .formatted(dateFormatter)
+            
+            guard let output = try? decoder.decode([Question].self, from: data) else {
+                print("data decode failed")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.allVoteList = output
+                self.tableView.reloadData()
+            }
+            
+        }.resume()
+    }
+    
+    private func getVoteData(from questionId: Int) {
+        let questionId = String(questionId)
+        let baseURL = "http://42votes.site/v1/questions/"
+        let apiURL = URL(string: baseURL + questionId)!
+        
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                fatalError("nil found in data")
+            }
+            
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                fatalError("response: \(String(describing: response))")
+            }
+            
+            let decoder = JSONDecoder()
+            let dateFormatter = DateFormatter()
+            
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            decoder.dateDecodingStrategy = .formatted(dateFormatter)
+            
+            guard let decodedVoteData = try? decoder.decode(Vote.self, from: data) else {
+                print("data decode failed")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.moveToVoteView(configureWith: decodedVoteData)
+            }
+            
+        }.resume()
+    }
+    
+    private func moveToVoteView(configureWith vote: Vote) {
+        guard let voteVC = self.storyboard?.instantiateViewController(withIdentifier: "VoteVC") as? VoteViewController else {
+            return
+        }
+        voteVC.vote = vote
+        self.navigationController?.pushViewController(voteVC, animated: true)
     }
 }
 

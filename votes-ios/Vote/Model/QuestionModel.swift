@@ -11,4 +11,5 @@ class Question: Codable {
     var id: Int?
     var question: String?
     var isExpired: Bool?
+    var expiresAt: Date?
 }
