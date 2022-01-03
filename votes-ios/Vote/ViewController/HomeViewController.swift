@@ -96,25 +96,38 @@ extension HomeViewController {
                 fatalError("nil found in data")
             }
             
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+            guard let response = response as? HTTPURLResponse else {
                 fatalError("response: \(String(describing: response))")
             }
             
-            let decoder = JSONDecoder()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            decoder.dateDecodingStrategy = .formatted(dateFormatter)
-            
-            guard let output = try? decoder.decode([Question].self, from: data) else {
-                print("data decode failed")
-                return
+            if (200 ... 299) ~= response.statusCode {
+                let decoder = JSONDecoder()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                decoder.dateDecodingStrategy = .formatted(dateFormatter)
+                
+                guard let output = try? decoder.decode([Question].self, from: data) else {
+                    print("data decode failed")
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.allVoteList = output
+                    self.tableView.reloadData()
+                }
             }
             
-            DispatchQueue.main.async {
-                self.allVoteList = output
-                self.tableView.reloadData()
+            if (400 ... 499) ~= response.statusCode {
+                DispatchQueue.main.async {
+                    self.alertOccurred(message: "다시 시도해주십시오.")
+                }
             }
             
+            if (500 ... 599) ~= response.statusCode {
+                DispatchQueue.main.async {
+                    self.alertOccurred(message: "서버 오류입니다.")
+                }
+            }
         }.resume()
     }
     
@@ -131,23 +144,37 @@ extension HomeViewController {
                 fatalError("nil found in data")
             }
             
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+            guard let response = response as? HTTPURLResponse else {
                 fatalError("response: \(String(describing: response))")
             }
             
-            let decoder = JSONDecoder()
-            let dateFormatter = DateFormatter()
-            
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            decoder.dateDecodingStrategy = .formatted(dateFormatter)
-            
-            guard let decodedVoteData = try? decoder.decode(Vote.self, from: data) else {
-                print("data decode failed")
-                return
+            if (200 ... 299) ~= response.statusCode {
+                let decoder = JSONDecoder()
+                let dateFormatter = DateFormatter()
+                
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                decoder.dateDecodingStrategy = .formatted(dateFormatter)
+                
+                guard let decodedVoteData = try? decoder.decode(Vote.self, from: data) else {
+                    print("data decode failed")
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.moveToVoteView(configureWith: decodedVoteData)
+                }
             }
             
-            DispatchQueue.main.async {
-                self.moveToVoteView(configureWith: decodedVoteData)
+            if (400 ... 499) ~= response.statusCode {
+                DispatchQueue.main.async {
+                    self.alertOccurred(message: "다시 시도해주십시오.")
+                }
+            }
+            
+            if (500 ... 599) ~= response.statusCode {
+                DispatchQueue.main.async {
+                    self.alertOccurred(message: "서버 오류입니다.")
+                }
             }
             
         }.resume()

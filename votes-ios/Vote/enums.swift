@@ -36,6 +36,7 @@ enum VoteViewTag: Int {
     case startAnswer = 1
     case selected = 200
     case background = 300
+    case textLabel = 400
 }
 
 enum VoteViewStatus {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A815F8EC2765D35B00A24D18 /* MyVoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */; };
+		A84E1E80277AD65F006503DB /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84E1E7F277AD65F006503DB /* extensions.swift */; };
 		A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8ED2759F32A00680099 /* VoteViewController.swift */; };
 		A867C8F02759F63A00680099 /* AnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8EF2759F63A00680099 /* AnswerModel.swift */; };
 		A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C3E272755E298009AEDBE /* HomeViewController.swift */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVoteViewController.swift; sourceTree = "<group>"; };
+		A84E1E7F277AD65F006503DB /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		A867C8ED2759F32A00680099 /* VoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewController.swift; sourceTree = "<group>"; };
 		A867C8EF2759F63A00680099 /* AnswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerModel.swift; sourceTree = "<group>"; };
 		A86C3E272755E298009AEDBE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				A8DFAAEC274FE59000E4A7F2 /* AppDelegate.swift */,
 				A8DFAAEE274FE59000E4A7F2 /* SceneDelegate.swift */,
 				A8DFAAF0274FE59000E4A7F2 /* ViewController.swift */,
+				A84E1E7F277AD65F006503DB /* extensions.swift */,
 				A896EFA227563AFA00B2A227 /* enums.swift */,
 				A8DFAAF5274FE59200E4A7F2 /* Assets.xcassets */,
 				A8DFAAFA274FE59200E4A7F2 /* Info.plist */,
@@ -197,6 +200,7 @@
 				A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */,
 				A86C3E282755E298009AEDBE /* HomeViewController.swift in Sources */,
 				A86C3E2A2755E3CF009AEDBE /* NewVoteViewController.swift in Sources */,
+				A84E1E80277AD65F006503DB /* extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
