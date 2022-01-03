@@ -104,7 +104,7 @@ extension NewVoteViewController {
         newVote.expiresAt = date?.date
         
         if question?.textColor == UIColor.lightGray || question?.text == "" {
-            alertAccured(message: "질문을 입력하세요.")
+            alertOccurred(message: "질문을 입력하세요.")
             return nil
         }
         
@@ -112,14 +112,14 @@ extension NewVoteViewController {
             guard let answerView = self.contentView.viewWithTag(i) as? UITextView else { fatalError("No AnswerView with tag \(i) Found") }
             
             if answerView.textColor == UIColor.lightGray || answerView.text == "" {
-                alertAccured(message: "선택지를 입력하세요.")
+                alertOccurred(message: "선택지를 입력하세요.")
                 return nil
             }
             newVote.answers?.append(answerView.text)
         }
         
         if date!.date <= Date() {
-            alertAccured(message: "투표 종료 날짜가 유효하지 않습니다.")
+            alertOccurred(message: "투표 종료 날짜가 유효하지 않습니다.")
             return nil
         }
         

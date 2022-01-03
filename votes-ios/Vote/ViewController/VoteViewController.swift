@@ -50,6 +50,7 @@ class VoteViewController: UIViewController {
     var voteButton: UIButton!
     var resultButton: UIButton!
     
+    var resultBarConstraints: [NSLayoutConstraint] = []
     
     // MARK: - Variables
     
@@ -96,6 +97,7 @@ class VoteViewController: UIViewController {
     // 투표의 총 개수 구하기
     private func getAllVotesCount() {
         if let answers = vote.answers {
+            allVotesCount = 0
             
             for answer in answers {
                 allVotesCount += answer.count ?? 0
@@ -196,6 +198,7 @@ extension VoteViewController {
                     
                     textLabel.text = "  " + text
                     
+                    textLabel.tag = answerTag + VoteViewTag.textLabel.rawValue
                     textLabel.translatesAutoresizingMaskIntoConstraints = false
                     return textLabel
                 }()
@@ -268,13 +271,15 @@ extension VoteViewController {
         for tag in 1...(answerTag) {
             guard let answerView = scrollView.viewWithTag(tag) else { fatalError() }
             guard let backLabel = answerView.viewWithTag(tag + VoteViewTag.background.rawValue) else { fatalError() }
+            guard let textLabel = answerView.viewWithTag(tag + VoteViewTag.textLabel.rawValue) else { fatalError() }
             
             let index = tag - 1
             let count = vote.answers![index].count ?? 0
             let percent = allVotesCount == 0 ? 0 : CGFloat(count) / CGFloat(allVotesCount)
             
-            // TODO: result를 한 번 더 눌렀을 때, constraint 충돌하는 현상 해결 필요!
-            backLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor, multiplier: percent).isActive = true
+            resultBarConstraints[index].isActive = false
+            resultBarConstraints[index] = (backLabel.widthAnchor.constraint(equalTo: textLabel.widthAnchor, multiplier: percent))
+            resultBarConstraints[index].isActive = true
             
             if voteViewStatus == .beforeVote {
                 backLabel.backgroundColor = UIColor.clear
@@ -341,8 +346,9 @@ extension VoteViewController {
         
         background.leadingAnchor.constraint(equalTo: answer.leadingAnchor).isActive = true
         background.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
-//        background.widthAnchor.constraint(equalTo: answer.widthAnchor, multiplier: percent).isActive = true
         background.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        resultBarConstraints.append(background.widthAnchor.constraint(equalTo: answer.widthAnchor, multiplier: percent))
+        resultBarConstraints.last!.isActive = true
         
         selected.centerXAnchor.constraint(equalTo: parentView.centerXAnchor).isActive = true
         selected.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
@@ -363,8 +369,10 @@ extension VoteViewController {
         
         // 버튼 눌렀을 때 서버에서 현재 Vote 데이터 가져온 뒤, 새로 뷰 뿌리기
         let returnAction = UIAction(handler: { _ in
-            self.getVoteData(from: self.vote.question!.id!)
-            self.voteViewStatus = .checkResult
+            if self.voteViewStatus == .beforeVote {
+                self.getVoteData(from: self.vote.question!.id!)
+                self.voteViewStatus = .checkResult
+            }
         })
         
         voteButton = UIButton(type: .system, primaryAction: voteAction)
@@ -449,9 +457,6 @@ extension VoteViewController {
             
             DispatchQueue.main.async {
                 self.vote = decodedVoteData
-                if self.voteViewStatus != .afterVote {
-                    self.voteViewStatus = .checkResult
-                }
                 self.configureAnswerFieldAfterVote()
                 self.viewWillAppear(true)
             }
@@ -474,7 +479,7 @@ extension VoteViewController {
         let encodedVote = try? encoder.encode(userVote)
         
         // Configure url and request
-        let userId = "2"
+        let userId = "1"
         let url: URL! = URL(string: URLs.base.rawValue + URLs.answer.rawValue + userId)
         var request = URLRequest(url: url)
         
@@ -494,19 +499,19 @@ extension VoteViewController {
             if (400...499) ~= response.statusCode {
                 DispatchQueue.main.async {
                     self.voteViewStatus = .checkResult
-                    self.alertAccured(message: "이미 참여한 투표입니다.")
+                    self.alertOccurred(message: "이미 참여한 투표입니다.")
                 }
             }
             else if (500...599) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertAccured(message: "서버가 불안정합니다.\n다시 시도해주세요.")
+                    self.alertOccurred(message: "서버가 불안정합니다.\n다시 시도해주세요.")
                 }
             }
             else if (200...299) ~= response.statusCode {
                 DispatchQueue.main.async {
                     self.voteViewStatus = .afterVote
                     self.getVoteData(from: self.vote.question!.id!)
-                    self.alertAccured(message: "투표가 완료되었습니다.")
+                    self.alertOccurred(message: "투표가 완료되었습니다.")
                 }
             }
         }.resume()

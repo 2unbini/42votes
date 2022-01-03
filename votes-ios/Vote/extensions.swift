@@ -16,7 +16,7 @@ extension UIButton {
 }
 
 extension UIViewController {
-    func alertAccured(message: String) {
+    func alertOccurred(message: String) {
         let alert = UIAlertController(title: "알림", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(alert, animated: true)
