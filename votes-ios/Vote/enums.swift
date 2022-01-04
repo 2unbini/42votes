@@ -52,4 +52,6 @@ enum URLs: String {
     case myQuestion = "questions/my/"
     case question = "questions/"
     case answer = "answers/"
+    case login = "login"
+    case register = "register"
 }
