@@ -9,12 +9,24 @@ import UIKit
 
 class MyVoteViewController: UITableViewController {
     
+    let hasUserData: Bool = UserDefaults.standard.bool(forKey: "hasUserData")
     var myVoteList = [Question]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureRefreshControl()
-        getMyVoteList()
+        
+        // user 로그인 정보가 있으면, MyVoteList 생성
+        if hasUserData {
+            configureRefreshControl()
+            getMyVoteList()
+        }
+        
+        // user 로그인 정보가 없으면, 로그인 라벨/버튼 뷰 생성
+        if !hasUserData {
+            let needLoginView = NeedLoginView(frame: CGRect(), self)
+            self.view.addSubview(needLoginView)
+            needLoginView.configureConstraints(self.view)
+        }
     }
     
     // 테이블뷰를 구성하는 데이터가 몇 행인지 리턴

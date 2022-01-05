@@ -12,6 +12,19 @@ class SigninViewController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var idField: UITextField!
     @IBOutlet var passwordField: UITextField!
+    @IBOutlet var passwordConfirmField: UITextField!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setTextFieldDelegate()
+    }
+    
+    private func setTextFieldDelegate() {
+        self.emailField.delegate = self
+        self.idField.delegate = self
+        self.passwordField.delegate = self
+        self.passwordConfirmField.delegate = self
+    }
     
     @IBAction func quitSignIn(_ sender: Any) {
         self.dismiss(animated: true)
@@ -32,23 +45,29 @@ class SigninViewController: UIViewController {
                     // TODO: Dismiss Modal View After Alert
                     self.dismiss(animated: true)
                 case let .failure(error):
-                    // TODO: Alert when call failed
+                    self.alertOccurred(message: failedSignIn)
                     print(error)
                 }
             }
     }
     
     private func configureForm() -> NewUser? {
-        guard let email = emailField.text else {
-            //alert
+        guard
+            let email = emailField.text,
+            let id = idField.text,
+            let password = passwordField.text,
+            let confirmedPassword = passwordConfirmField.text
+        else {
+            fatalError("Textfield.text == nil")
+        }
+        
+        if email.isEmpty || id.isEmpty || password.isEmpty || confirmedPassword.isEmpty {
+            alertOccurred(message: textFieldisEmpty)
             return nil
         }
-        guard let id = idField.text else {
-            //alert
-            return nil
-        }
-        guard let password = passwordField.text else {
-            //alert
+        
+        if password != confirmedPassword {
+            alertOccurred(message: passwordNotConfirmed)
             return nil
         }
         

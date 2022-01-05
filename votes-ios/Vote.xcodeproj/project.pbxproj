@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6C164A1D3A0FE7830A83216D /* Pods_Vote.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095B25F57D3412CFB6F5B32D /* Pods_Vote.framework */; };
 		A815F8EC2765D35B00A24D18 /* MyVoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */; };
+		A831EDA5278581E200EAE093 /* NeedLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A831EDA4278581E200EAE093 /* NeedLogin.swift */; };
 		A84E1E80277AD65F006503DB /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84E1E7F277AD65F006503DB /* extensions.swift */; };
 		A867C8EE2759F32A00680099 /* VoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8ED2759F32A00680099 /* VoteViewController.swift */; };
 		A867C8F02759F63A00680099 /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A867C8EF2759F63A00680099 /* Answer.swift */; };
@@ -33,6 +34,7 @@
 		126E1A23C9CBF9BF32F9003D /* Pods-Vote.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vote.release.xcconfig"; path = "Target Support Files/Pods-Vote/Pods-Vote.release.xcconfig"; sourceTree = "<group>"; };
 		82EAD5A2273C3D85236C6772 /* Pods-Vote.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vote.debug.xcconfig"; path = "Target Support Files/Pods-Vote/Pods-Vote.debug.xcconfig"; sourceTree = "<group>"; };
 		A815F8EB2765D35B00A24D18 /* MyVoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVoteViewController.swift; sourceTree = "<group>"; };
+		A831EDA4278581E200EAE093 /* NeedLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedLogin.swift; sourceTree = "<group>"; };
 		A84E1E7F277AD65F006503DB /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		A867C8ED2759F32A00680099 /* VoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteViewController.swift; sourceTree = "<group>"; };
 		A867C8EF2759F63A00680099 /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
@@ -66,6 +68,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A831EDA3278581D300EAE093 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A831EDA4278581E200EAE093 /* NeedLogin.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		A896EFA4275645D000B2A227 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +130,7 @@
 		A8DFAAEB274FE59000E4A7F2 /* Vote */ = {
 			isa = PBXGroup;
 			children = (
+				A831EDA3278581D300EAE093 /* View */,
 				A896EFA62756460F00B2A227 /* Storyboard */,
 				A896EFA5275645E200B2A227 /* Model */,
 				A896EFA4275645D000B2A227 /* ViewController */,
@@ -281,6 +292,7 @@
 				A86C3E2A2755E3CF009AEDBE /* NewVoteViewController.swift in Sources */,
 				A8E5AA732784681A00AF4CCA /* LoginViewController.swift in Sources */,
 				A84E1E80277AD65F006503DB /* extensions.swift in Sources */,
+				A831EDA5278581E200EAE093 /* NeedLogin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

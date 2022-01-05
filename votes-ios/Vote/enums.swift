@@ -55,3 +55,13 @@ enum URLs: String {
     case login = "login"
     case register = "register"
 }
+
+// when login needed
+let loginNeededDescription: String = "로그인이 필요한 서비스입니다."
+let loginNeededButtonTitle: String = "로그인으로 이동"
+
+// alert messages
+let textFieldisEmpty: String = "입력되지 않은 항목이 있습니다."
+let passwordNotConfirmed: String = "비밀번호를 다시 확인해주세요."
+let failedSignIn: String = "가입에 실패했습니다."
+let failedLogIn: String = "로그인에 실패했습니다."

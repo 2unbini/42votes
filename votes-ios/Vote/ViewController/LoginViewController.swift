@@ -22,15 +22,25 @@ class LoginViewController: UIViewController {
     @IBOutlet var idField: UITextField!
     @IBOutlet var passwordField: UITextField!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.idField.delegate = self
+        self.passwordField.delegate = self
+    }
+    
     @IBAction func login(_ sender: Any) {
-        guard let id = idField.text else {
-            //alert
+        guard
+            let id = idField.text,
+            let password = passwordField.text
+        else {
+            fatalError("Textfield.text == nil")
+        }
+        
+        if id.isEmpty || password.isEmpty {
+            alertOccurred(message: textFieldisEmpty)
             return
         }
-        guard let password = passwordField.text else {
-            //alert
-            return
-        }
+
         
         // Make Data and Call API
         let userToLogin = User(password: password, username: id)
@@ -47,17 +57,19 @@ class LoginViewController: UIViewController {
                 case .success:
                     // TODO: Save Login Value in Keychain
                     if let data = response.value, let token = String(data: data, encoding: .utf8) {
+                        UserDefaults.standard.set(true, forKey: "hasUserData")
                         self.login = Login(with: token, userToLogin)
                         self.moveToHomeView()
                     }
                 case let .failure(error):
-                    // TODO: Alert Error
+                    self.alertOccurred(message: failedLogIn)
                     print(error)
                 }
         }
     }
     
     @IBAction func startWithoutLogin(_ sender: Any) {
+        UserDefaults.standard.set(false, forKey: "hasUserData")
         moveToHomeView()
     }
     
