@@ -5,6 +5,7 @@ import com.example.votesspring.security.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,11 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().disable()
                 .csrf().disable()
-                .authorizeRequests().antMatchers(
-                        "/v1/register",
-                        "/v1/login",
+                .authorizeRequests().antMatchers(HttpMethod.GET,
+                        "/",
+                        "/v1/questions/{questionId:[0-9]+}", "/v1/questions/all",
                         "/swagger-ui/**")
                 .permitAll()
+                .antMatchers(HttpMethod.POST,
+                        "/v1/login", "/v1/register").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

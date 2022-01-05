@@ -41,6 +41,10 @@ public class QuestionService {
                 collect(Collectors.toList());
     }
 
+    public Question findQuestion(Long questionId) {
+        return questionMapper.findById(questionId).orElseThrow(QuestionNotFoundException::new);
+    }
+
     public VoteResponseDto findVoteByQuestionId(Long questionId) throws QuestionNotFoundException, AnswerEmptyException {
         Question question = questionMapper.findById(questionId).orElseThrow(QuestionNotFoundException::new);
         List<Answer> answers = answerMapper.findAllByQuestionId(questionId);
@@ -81,5 +85,9 @@ public class QuestionService {
                         map(Answer::answerResponseDtoConverter).
                         collect(Collectors.toList())).
                 build();
+    }
+
+    public void deleteQuestion(Question question) {
+        questionMapper.deleteById(question.getId());
     }
 }
