@@ -84,10 +84,10 @@ extension HomeViewController {
 extension HomeViewController {
     
     private func getAllVoteList() {
-        let baseURL = "http://42votes.site/v1/questions/all"
-        let apiURI: URL! = URL(string: baseURL)
+        let urlString = URLs.base.rawValue + URLs.allQuestions.rawValue
+        let urlForRequest: URL! = URL(string: urlString)
         
-        var request = URLRequest(url: apiURI)
+        var request = URLRequest(url: urlForRequest)
         request.httpMethod = "GET"
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -119,13 +119,13 @@ extension HomeViewController {
             
             if (400 ... 499) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertOccurred(message: "다시 시도해주십시오.")
+                    self.alertOccurred(message: fetchFailed, handler: nil)
                 }
             }
             
             if (500 ... 599) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertOccurred(message: "서버 오류입니다.")
+                    self.alertOccurred(message: serverIsDown, handler: nil)
                 }
             }
         }.resume()
@@ -133,10 +133,10 @@ extension HomeViewController {
     
     private func getVoteData(from questionId: Int) {
         let questionId = String(questionId)
-        let baseURL = "http://42votes.site/v1/questions/"
-        let apiURL = URL(string: baseURL + questionId)!
+        let urlString = URLs.base.rawValue + URLs.question.rawValue
+        let urlForRequest = URL(string: urlString + questionId)!
         
-        var request = URLRequest(url: apiURL)
+        var request = URLRequest(url: urlForRequest)
         request.httpMethod = "GET"
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -167,13 +167,13 @@ extension HomeViewController {
             
             if (400 ... 499) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertOccurred(message: "다시 시도해주십시오.")
+                    self.alertOccurred(message: fetchFailed, handler: nil)
                 }
             }
             
             if (500 ... 599) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertOccurred(message: "서버 오류입니다.")
+                    self.alertOccurred(message: serverIsDown, handler: nil)
                 }
             }
             
