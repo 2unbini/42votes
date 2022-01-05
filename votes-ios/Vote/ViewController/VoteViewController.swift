@@ -54,7 +54,7 @@ class VoteViewController: UIViewController {
     
     // MARK: - Variables
     
-    // TODO: vote 변경하는 시점 추가 => 버튼 눌렀을 때
+    let hasUserData: Bool = UserDefaults.standard.bool(forKey: "hasUserData")
     var vote: Vote!
     var allVotesCount: Int = 0
     
@@ -384,6 +384,10 @@ extension VoteViewController {
             voteButton.disable()
             resultButton.disable()
         }
+        
+        if !hasUserData {
+            voteButton.disable()
+        }
       
         scrollView.addSubview(voteButton)
         scrollView.addSubview(resultButton)
@@ -479,11 +483,13 @@ extension VoteViewController {
         let encodedVote = try? encoder.encode(userVote)
         
         // Configure url and request
-        let userId = "1"
-        let url: URL! = URL(string: URLs.base.rawValue + URLs.answer.rawValue + userId)
-        var request = URLRequest(url: url)
+        let urlString: String = URLs.base.rawValue + URLs.answer.rawValue
+        let urlForRequest: URL = URL(string: urlString)!
+        var request = URLRequest(url: urlForRequest)
+        let token = UserDefaults.standard.string(forKey: "token")
         
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
         request.httpBody = encodedVote
         
@@ -499,19 +505,19 @@ extension VoteViewController {
             if (400...499) ~= response.statusCode {
                 DispatchQueue.main.async {
                     self.voteViewStatus = .checkResult
-                    self.alertOccurred(message: "이미 참여한 투표입니다.")
+                    self.alertOccurred(message: alreadyVoted, handler: nil)
                 }
             }
             else if (500...599) ~= response.statusCode {
                 DispatchQueue.main.async {
-                    self.alertOccurred(message: "서버가 불안정합니다.\n다시 시도해주세요.")
+                    self.alertOccurred(message: serverIsDown, handler: nil)
                 }
             }
             else if (200...299) ~= response.statusCode {
                 DispatchQueue.main.async {
                     self.voteViewStatus = .afterVote
                     self.getVoteData(from: self.vote.question!.id!)
-                    self.alertOccurred(message: "투표가 완료되었습니다.")
+                    self.alertOccurred(message: voteSucceeded, handler: nil)
                 }
             }
         }.resume()

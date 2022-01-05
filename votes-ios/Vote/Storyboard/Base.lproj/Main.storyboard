@@ -94,7 +94,16 @@
                             <outlet property="delegate" destination="Li4-w3-Fyb" id="djG-XA-uaU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My Votes" id="iNx-VF-hbi"/>
+                    <navigationItem key="navigationItem" title="My Votes" id="iNx-VF-hbi">
+                        <barButtonItem key="rightBarButtonItem" title="로그아웃" id="hgn-Kq-cmO">
+                            <connections>
+                                <action selector="logout:" destination="Li4-w3-Fyb" id="ycl-4H-zHb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="logOutButton" destination="hgn-Kq-cmO" id="6zR-79-Im7"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v1S-X6-5D5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -148,6 +157,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="contentView" destination="YFI-YR-L71" id="4Ce-vG-yG7"/>
+                        <outlet property="saveNewVoteButton" destination="C6q-5g-hTg" id="CVL-eF-A5w"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wRW-Ux-tGA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

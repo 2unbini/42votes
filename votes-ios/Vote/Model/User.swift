@@ -7,18 +7,21 @@
 
 import Foundation
 
+// User Data to Login
 struct User: Codable {
     var password: String?
     var username: String?
 }
 
+// User Data to Signin
 struct NewUser: Codable {
     var email: String?
     var password: String?
     var username: String?
 }
 
-class Login {
+// 
+struct Credentials: Codable {
     var user: User
     var token: String
     

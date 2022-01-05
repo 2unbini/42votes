@@ -18,6 +18,9 @@ import UIKit
 
 class NewVoteViewController: UIViewController {
     
+    let hasUserData = UserDefaults.standard.bool(forKey: "hasUserData")
+    
+    @IBOutlet var saveNewVoteButton: UIBarButtonItem!
     @IBOutlet var contentView: UIView!
     
     private var viewIndex = Tag.questionLabel.rawValue
@@ -32,6 +35,14 @@ class NewVoteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if !hasUserData {
+            self.saveNewVoteButton.isEnabled = false
+            alertOccurred(message: loginNeededDescription) { _ in
+                self.dismiss(animated: true)
+            }
+            return
+        }
         configureQuestionField()
         configureAnswerField()
         configureButton()
@@ -104,7 +115,7 @@ extension NewVoteViewController {
         newVote.expiresAt = date?.date
         
         if question?.textColor == UIColor.lightGray || question?.text == "" {
-            alertOccurred(message: "질문을 입력하세요.")
+            alertOccurred(message: textFieldisEmpty, handler: nil)
             return nil
         }
         
@@ -112,14 +123,14 @@ extension NewVoteViewController {
             guard let answerView = self.contentView.viewWithTag(i) as? UITextView else { fatalError("No AnswerView with tag \(i) Found") }
             
             if answerView.textColor == UIColor.lightGray || answerView.text == "" {
-                alertOccurred(message: "선택지를 입력하세요.")
+                alertOccurred(message: textFieldisEmpty, handler: nil)
                 return nil
             }
             newVote.answers?.append(answerView.text)
         }
         
         if date!.date <= Date() {
-            alertOccurred(message: "투표 종료 날짜가 유효하지 않습니다.")
+            alertOccurred(message: invalidEndDate, handler: nil)
             return nil
         }
         
@@ -145,13 +156,15 @@ extension NewVoteViewController {
     }
     
     private func postNewVote(with data: Data) {
-        let baseURL = "http://42votes.site/v1/questions/my/"
-        let userId = "1"
-        let apiURI: URL! = URL(string: baseURL + userId)
+        let urlString: String = URLs.base.rawValue + URLs.myQuestion.rawValue
+        let urlForRequest: URL! = URL(string: urlString)
         
-        var request = URLRequest(url: apiURI)
+        var request = URLRequest(url: urlForRequest)
+        let token = UserDefaults.standard.string(forKey: "token")
+        
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")
         request.httpBody = data
         
         URLSession.shared.dataTask(with: request) { data, response, error in

@@ -45,7 +45,7 @@ class SigninViewController: UIViewController {
                     // TODO: Dismiss Modal View After Alert
                     self.dismiss(animated: true)
                 case let .failure(error):
-                    self.alertOccurred(message: failedSignIn)
+                    self.alertOccurred(message: signinFailed, handler: nil)
                     print(error)
                 }
             }
@@ -62,15 +62,22 @@ class SigninViewController: UIViewController {
         }
         
         if email.isEmpty || id.isEmpty || password.isEmpty || confirmedPassword.isEmpty {
-            alertOccurred(message: textFieldisEmpty)
+            alertOccurred(message: textFieldisEmpty, handler: nil)
             return nil
         }
         
         if password != confirmedPassword {
-            alertOccurred(message: passwordNotConfirmed)
+            alertOccurred(message: passwordNotConfirmed, handler: nil)
             return nil
         }
         
-        return NewUser(email: email, password: password, username: id)
+        let newUser = NewUser(email: email, password: password, username: id)
+        // Clean Fields
+        emailField.text = ""
+        idField.text = ""
+        passwordField.text = ""
+        passwordConfirmField.text = ""
+        
+        return newUser
     }
 }

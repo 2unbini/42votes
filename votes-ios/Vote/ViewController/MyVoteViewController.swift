@@ -9,7 +9,9 @@ import UIKit
 
 class MyVoteViewController: UITableViewController {
     
+    @IBOutlet var logOutButton: UIBarButtonItem!
     let hasUserData: Bool = UserDefaults.standard.bool(forKey: "hasUserData")
+    let token: String? = UserDefaults.standard.string(forKey: "token") ?? nil
     var myVoteList = [Question]()
     
     override func viewDidLoad() {
@@ -23,10 +25,17 @@ class MyVoteViewController: UITableViewController {
         
         // user 로그인 정보가 없으면, 로그인 라벨/버튼 뷰 생성
         if !hasUserData {
+            self.logOutButton.isEnabled = false
+            self.logOutButton.title = ""
             let needLoginView = NeedLoginView(frame: CGRect(), self)
             self.view.addSubview(needLoginView)
             needLoginView.configureConstraints(self.view)
         }
+    }
+    
+    @IBAction func logout(_ sender: Any) {
+        UserDefaults.standard.removeObject(forKey: "hasUserData")
+        self.dismiss(animated: true)
     }
     
     // 테이블뷰를 구성하는 데이터가 몇 행인지 리턴
@@ -72,12 +81,13 @@ class MyVoteViewController: UITableViewController {
         return height
     }
     
-    // TODO: Not working
     // 스와이프해서 삭제
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            let questionId = myVoteList[indexPath.row].id!
             myVoteList.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            deleteVote(questionId: questionId)
         }
     }
 }
@@ -105,12 +115,12 @@ extension MyVoteViewController {
 extension MyVoteViewController {
     
     private func getMyVoteList() {
-        let user = "1"
-        let baseURL = "http://42votes.site/v1/questions/my/"
-        let apiURL = URL(string: baseURL + user)!
+        let urlString = URLs.base.rawValue + URLs.myQuestion.rawValue
+        let urlForRequest = URL(string: urlString)!
         
-        var request = URLRequest(url: apiURL)
+        var request = URLRequest(url: urlForRequest)
         request.httpMethod = "GET"
+        request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
@@ -141,10 +151,10 @@ extension MyVoteViewController {
     
     private func getVoteData(from questionId: Int) {
         let questionId = String(questionId)
-        let baseURL = "http://42votes.site/v1/questions/"
-        let apiURL = URL(string: baseURL + questionId)!
+        let urlString = URLs.base.rawValue + URLs.question.rawValue
+        let urlForRequest = URL(string: urlString + questionId)!
         
-        var request = URLRequest(url: apiURL)
+        var request = URLRequest(url: urlForRequest)
         request.httpMethod = "GET"
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -169,6 +179,24 @@ extension MyVoteViewController {
             
             DispatchQueue.main.async {
                 self.moveToVoteView(configureWith: decodedVoteData)
+            }
+            
+        }.resume()
+    }
+    
+    private func deleteVote(questionId: Int) {
+        let questionId: String = String(questionId)
+        let urlString: String = URLs.base.rawValue + URLs.question.rawValue + questionId
+        let urlForRequest: URL = URL(string: urlString)!
+        
+        var request = URLRequest(url: urlForRequest)
+        request.httpMethod = "DELETE"
+        request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            guard let response = response as? HTTPURLResponse, (200...299) ~= response.statusCode else {
+                fatalError("response: \(String(describing: response))")
             }
             
         }.resume()
