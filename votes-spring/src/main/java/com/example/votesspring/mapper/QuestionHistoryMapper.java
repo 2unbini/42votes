@@ -11,4 +11,6 @@ public interface QuestionHistoryMapper {
     boolean existsByUserIdQuestionId(Long userId, Long questionId);
 
     void deleteByAllId(Long userId, Long questionId);
+
+    void deleteByAllquestionId(Long questionId);
 }

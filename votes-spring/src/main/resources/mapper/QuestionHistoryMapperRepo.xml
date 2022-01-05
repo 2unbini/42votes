@@ -25,4 +25,9 @@
             where user_id = #{userId} AND question_id = #{questionId}
     </delete>
 
+    <delete id="deleteByAllquestionId">
+        delete from question_history
+        where question_id = #{questionId}
+    </delete>
+
 </mapper>

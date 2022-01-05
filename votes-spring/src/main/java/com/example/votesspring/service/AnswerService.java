@@ -1,8 +1,11 @@
 package com.example.votesspring.service;
 
 import com.example.votesspring.domain.Answer;
+import com.example.votesspring.domain.Question;
 import com.example.votesspring.domain.QuestionHistory;
 import com.example.votesspring.dto.request.AnswerRequestDto;
+import com.example.votesspring.dto.response.AnswerResponseDto;
+import com.example.votesspring.dto.response.QuestionResponseDto;
 import com.example.votesspring.exception.model.AnswerNotFoundException;
 import com.example.votesspring.exception.model.AnswerNotMatchQuesitonId;
 import com.example.votesspring.exception.model.DuplicateVote;
@@ -42,5 +45,10 @@ public class AnswerService {
             answerMapper.updateCountById(answer);
             return userId + "가 question id : " + answerRequestDto.getQuestionId() + "에 투표했습니다.";
         }
+    }
+
+    public void deleteAnswer(Question question) {
+        questionHistoryMapper.deleteByAllquestionId(question.getId());
+        answerMapper.deleteByQuestinoId(question.getId());
     }
 }
