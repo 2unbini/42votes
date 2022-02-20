@@ -486,7 +486,7 @@ extension VoteViewController {
         let urlString: String = URLs.base.rawValue + URLs.answer.rawValue
         let urlForRequest: URL = URL(string: urlString)!
         var request = URLRequest(url: urlForRequest)
-        let token = UserDefaults.standard.string(forKey: "token")
+        let token = KeyChainService.readKeyChain(URLs.base.rawValue, "token")
         
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")

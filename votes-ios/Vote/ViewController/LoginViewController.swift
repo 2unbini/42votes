@@ -21,8 +21,9 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         if hasUserData {
-            let password = UserDefaults.standard.string(forKey: "password")
-            let username = UserDefaults.standard.string(forKey: "username")
+            guard let username = UserDefaults.standard.string(forKey: "username") else { return }
+            let url = URLs.base.rawValue
+            let password = KeyChainService.readKeyChain(url, username)
             loginAPICall(with: User(password: password, username: username))
         }
         self.idField.delegate = self
@@ -67,14 +68,14 @@ class LoginViewController: UIViewController {
                 case .success:
                     // TODO: Save Login Value in Keychain
                     if let data = response.value, let token = String(data: data, encoding: .utf8) {
-                        UserDefaults.standard.setValue(user.username, forKey: "username")
-                        UserDefaults.standard.setValue(user.password, forKey: "password")
-                        UserDefaults.standard.setValue(token, forKey: "token")
+                        KeyChainService.createKeyChain(URLs.base.rawValue, user.username ?? "", user.password ?? "")
+                        KeyChainService.createKeyChain(URLs.base.rawValue, "token", token)
                         UserDefaults.standard.set(true, forKey: "hasUserData")
+                        UserDefaults.standard.set(user.username, forKey: "username")
                         self.moveToHomeView()
                     }
                 case let .failure(error):
-                    self.alertOccurred(message: loginFailed + "\nError: \(error)", handler: nil)
+                    self.alertOccurred(message: loginFailed, handler: nil)
                     print(error)
                 }
         }
