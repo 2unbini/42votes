@@ -160,7 +160,7 @@ extension NewVoteViewController {
         let urlForRequest: URL! = URL(string: urlString)
         
         var request = URLRequest(url: urlForRequest)
-        let token = UserDefaults.standard.string(forKey: "token")
+        let token = KeyChainService.readKeyChain(URLs.base.rawValue, "token")
         
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -193,24 +193,35 @@ extension NewVoteViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             
             // leading constraint
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40).isActive = true
+            label.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor,
+                constant: 40
+            ).isActive = true
             
             // 조건에 따라 top constraint
             if tag == Tag.questionLabel.rawValue {
-                label.topAnchor.constraint(equalTo: contentView.topAnchor,
-                                           constant: 30).isActive = true
+                label.topAnchor.constraint(
+                    equalTo: contentView.topAnchor,
+                    constant: 30
+                ).isActive = true
                 heightConstant = 30
             } else if tag == Tag.answerLabel.rawValue {
-                label.topAnchor.constraint(equalTo: contentView.viewWithTag(preIndex)!.bottomAnchor,
-                                           constant: 30).isActive = true
+                label.topAnchor.constraint(
+                    equalTo: contentView.viewWithTag(preIndex)!.bottomAnchor,
+                    constant: 30
+                ).isActive = true
                 heightConstant = 30
             } else if tag == Tag.dueDateLabel.rawValue {
-                label.topAnchor.constraint(equalTo: contentView.viewWithTag(201)!.bottomAnchor,
-                                           constant: 30).isActive = true
+                label.topAnchor.constraint(
+                    equalTo: contentView.viewWithTag(201)!.bottomAnchor,
+                    constant: 30
+                ).isActive = true
                 heightConstant = 30
             } else {
-                label.topAnchor.constraint(equalTo: contentView.viewWithTag(preIndex)!.bottomAnchor,
-                                           constant: 20).isActive = true
+                label.topAnchor.constraint(
+                    equalTo: contentView.viewWithTag(preIndex)!.bottomAnchor,
+                    constant: 20
+                ).isActive = true
                 heightConstant = 20
             }
             
@@ -226,22 +237,34 @@ extension NewVoteViewController {
             
             textView.translatesAutoresizingMaskIntoConstraints = false
             
-            textView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,
-                                              constant: 0).isActive = true
-            textView.topAnchor.constraint(equalTo: contentView.viewWithTag(tag - 1)!.bottomAnchor,
-                                          constant: 10).isActive = true
+            textView.centerXAnchor.constraint(
+                equalTo: contentView.centerXAnchor,
+                constant: 0
+            ).isActive = true
+            textView.topAnchor.constraint(
+                equalTo: contentView.viewWithTag(tag - 1)!.bottomAnchor,
+                constant: 10
+            ).isActive = true
             
             if tag == Tag.questionTextView.rawValue {
-                textView.widthAnchor.constraint(equalTo: contentView.widthAnchor,
-                                                multiplier: 0.8).isActive = true
-                textView.heightAnchor.constraint(equalTo: contentView.heightAnchor,
-                                                 multiplier: 0.1).isActive = true
+                textView.widthAnchor.constraint(
+                    equalTo: contentView.widthAnchor,
+                    multiplier: 0.8
+                ).isActive = true
+                textView.heightAnchor.constraint(
+                    equalTo: contentView.heightAnchor,
+                    multiplier: 0.1
+                ).isActive = true
                 heightConstant = (contentView.frame.height) * 0.1
             } else {
-                textView.widthAnchor.constraint(equalTo: contentView.widthAnchor,
-                                                multiplier: 0.8).isActive = true
-                textView.heightAnchor.constraint(equalTo: contentView.heightAnchor,
-                                                 multiplier: 0.05).isActive = true
+                textView.widthAnchor.constraint(
+                    equalTo: contentView.widthAnchor,
+                    multiplier: 0.8
+                ).isActive = true
+                textView.heightAnchor.constraint(
+                    equalTo: contentView.heightAnchor,
+                    multiplier: 0.05
+                ).isActive = true
                 heightConstant = (contentView.frame.height) * 0.05
             }
             
@@ -450,14 +473,22 @@ extension NewVoteViewController {
         if let datePicker = contentView.viewWithTag(tag) {
             datePicker.translatesAutoresizingMaskIntoConstraints = false
             
-            datePicker.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,
-                                                constant: 0).isActive = true
-            datePicker.topAnchor.constraint(equalTo: contentView.viewWithTag(tag - 1)!.bottomAnchor,
-                                            constant: 20).isActive = true
-            datePicker.widthAnchor.constraint(equalTo: view.widthAnchor,
-                                              multiplier: 0.8).isActive = true
-            datePicker.heightAnchor.constraint(equalTo: view.heightAnchor,
-                                               multiplier: 0.2).isActive = true
+            datePicker.centerXAnchor.constraint(
+                equalTo: contentView.centerXAnchor,
+                constant: 0
+            ).isActive = true
+            datePicker.topAnchor.constraint(
+                equalTo: contentView.viewWithTag(tag - 1)!.bottomAnchor,
+                constant: 20
+            ).isActive = true
+            datePicker.widthAnchor.constraint(
+                equalTo: view.widthAnchor,
+                multiplier: 0.8
+            ).isActive = true
+            datePicker.heightAnchor.constraint(
+                equalTo: view.heightAnchor,
+                multiplier: 0.2
+            ).isActive = true
             self.contentViewHeight += (20 + view.frame.height * 0.2)
         }
     }

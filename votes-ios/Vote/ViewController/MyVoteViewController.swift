@@ -11,7 +11,6 @@ class MyVoteViewController: UITableViewController {
     
     @IBOutlet var logOutButton: UIBarButtonItem!
     let hasUserData: Bool = UserDefaults.standard.bool(forKey: "hasUserData")
-    let token: String? = UserDefaults.standard.string(forKey: "token") ?? nil
     var myVoteList = [Question]()
     
     override func viewDidLoad() {
@@ -117,6 +116,7 @@ extension MyVoteViewController {
     private func getMyVoteList() {
         let urlString = URLs.base.rawValue + URLs.myQuestion.rawValue
         let urlForRequest = URL(string: urlString)!
+        let token = KeyChainService.readKeyChain(URLs.base.rawValue, "token")
         
         var request = URLRequest(url: urlForRequest)
         request.httpMethod = "GET"
@@ -188,7 +188,8 @@ extension MyVoteViewController {
         let questionId: String = String(questionId)
         let urlString: String = URLs.base.rawValue + URLs.question.rawValue + questionId
         let urlForRequest: URL = URL(string: urlString)!
-        
+        let token = KeyChainService.readKeyChain(URLs.base.rawValue, "token")
+
         var request = URLRequest(url: urlForRequest)
         request.httpMethod = "DELETE"
         request.setValue(bearer + token!, forHTTPHeaderField: "Authorization")
