@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.votesspring.mapper.QuestionHistoryMapper">
+    <resultMap id="rQuestionHistory" type="com.example.votesspring.domain.QuestionHistory">
+        <result property="id" column="question_history_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="questionId" column="question_id"/>
+    </resultMap>
+
+    <insert id="save" parameterType="QuestionHistory">
+        insert into question_history (user_id, question_id)
+            values (#{userId}, #{questionId})
+    </insert>
+
+    <select id="existsByUserIdQuestionId" resultType="Boolean">
+        select exists(
+            select * from question_history
+                where user_id= #{userId} and question_id= #{questionId}
+        )
+    </select>
+
+    <delete id="deleteByAllId">
+        delete from question_history
+            where user_id = #{userId} AND question_id = #{questionId}
+    </delete>
+
+    <delete id="deleteByAllquestionId">
+        delete from question_history
+        where question_id = #{questionId}
+    </delete>
+
+</mapper>

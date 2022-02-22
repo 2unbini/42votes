@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.votesspring.mapper.UserMapper">
+    <resultMap id="rUser" type="com.example.votesspring.domain.User">
+        <result property="id" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="User">
+        insert into user(username, password, email, deleted_at)
+        values (#{username}, #{password}, #{email}, #{deletedAt})
+    </insert>
+
+    <select id="findAll" resultMap="rUser">
+        select * from user
+    </select>
+
+    <select id="findByName" resultMap="rUser">
+        select * from user where username = #{username}
+    </select>
+
+
+    <delete id="deleteByName">
+        delete from user where username = #{username}
+    </delete>
+</mapper>

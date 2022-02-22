@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.votesspring.mapper.QuestionMapper">
+    <resultMap id="rQuestion" type="com.example.votesspring.domain.Question">
+        <result property="id" column="question_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="question" column="question"/>
+        <result property="expiresAt" column="expires_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <insert id="save" parameterType="Question">
+        insert into question (user_id, question, expires_at)
+        values (#{userId}, #{question}, #{expiresAt})
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="findAll" resultMap="rQuestion">
+        select * from question
+    </select>
+
+    <select id="findById" resultMap="rQuestion">
+        select * from question where question_id = #{id}
+    </select>
+
+    <select id="findByUserId" resultMap="rQuestion">
+        select * from question where user_id = #{userId}
+    </select>
+
+    <delete id="deleteById">
+        delete from question where question_id = #{id}
+    </delete>
+</mapper>
